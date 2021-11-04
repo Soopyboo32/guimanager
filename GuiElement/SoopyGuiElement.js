@@ -57,6 +57,12 @@ class SoopyGuiElement{
         this.scrollable = false
 
         /**
+         * Lore to render when hovered
+         * @type {Array<String> | undefined} //undefined to not show
+         */
+        this.lore = undefined
+
+        /**
          * Wether to render this element
          * disabling will disable all events.
          */
@@ -96,6 +102,12 @@ class SoopyGuiElement{
             if((!this.parent || this.parent.hovered) && mouseX > this.location.getXExact() && mouseX < this.location.getXExact()+this.location.getWidthExact()
                 && mouseY > this.location.getYExact() && mouseY < this.location.getYExact()+this.location.getHeightExact()){
                 this.hovered = true
+            }
+
+            if(this.hovered && this.lore){
+                //Render Lore
+
+                this.main._loreData = [mouseX, mouseY, this.lore]
             }
         })
 
@@ -172,6 +184,16 @@ class SoopyGuiElement{
         let theParent = this.innerObjectPaddingThing || this
         child.setParent(theParent).setMain(this.main)
         theParent.children.push(child)
+        return this
+    }
+
+    /**
+     * Sets the lore of the element
+     * @param {Array<String>} lore The lore to render
+     * @returns {SoopyGuiElement} This for method chaining
+     */
+    setLore(lore){
+        this.lore = lore
         return this
     }
 

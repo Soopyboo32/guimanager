@@ -50,7 +50,15 @@ class SoopyGui{
           * @type {Number}
           */
          this.lastOpenedTime = 0
-     
+
+         /**
+          * Lore data, internal use only
+          * 
+          * undefined for no lore
+          * @type {Array[Number, Number, Array<String>]} [x, y, lore]
+          */
+        this._loreData = undefined
+
          /**
           * Litterally just the screen location
           * 
@@ -176,6 +184,8 @@ class SoopyGui{
      * @param {Number} partialTicks The partialTicks
      */
     _render(mouseX, mouseY, partialTicks){
+        this._loreData = undefined
+
         this._renderBackground(mouseX, mouseY, partialTicks)
 
         if(!this.optimisedLocations && !this.slowLocations) this.element.triggerEvent(Enums.EVENT.RESET_FRAME_CACHES)
@@ -183,6 +193,59 @@ class SoopyGui{
         this.element.triggerEvent(Enums.EVENT.RENDER, [mouseX, mouseY, partialTicks])
 
         Notification.doRender()
+
+        if(this._loreData){ //TODO: move into function in renderLibs
+            let [x, y, lore] = this._loreData
+
+            let maxWidth = 0
+
+            lore.forEach((line)=>{
+                let width = Renderer.getStringWidth(line);
+
+                if(width > maxWidth) maxWidth = width
+            })
+
+            let l1 = x + 12;
+            let i2 = y - 12;
+            let k = 8;
+
+            if (lore.length > 1){
+                k += 2 + (lore.length - 1) * 10;
+            }
+
+            if (l1 + maxWidth > Renderer.screen.getWidth()){
+                l1 -= 28 + maxWidth;
+            }
+
+            if (i2 + k + 6 > Renderer.screen.getHeight()){
+                i2 = Renderer.screen.getHeight() - k - 6;
+            }
+
+            let borderColor = Renderer.color(35, 1, 85);
+            let backgroundColor = -267386864
+
+            function drawRectStupid(color, x1, y1, x2, y2){
+                Renderer.drawRect(color, x1, y1, x2-x1, y2-y1)
+            }
+
+            drawRectStupid(backgroundColor, l1 - 3, i2 - 4, l1 + maxWidth + 3, i2 - 3)
+            drawRectStupid(backgroundColor, l1 - 3, i2 + k + 3, l1 + maxWidth + 3, i2 + k + 4)
+            drawRectStupid(backgroundColor, l1 - 3, i2 - 3, l1 + maxWidth + 3, i2 + k + 3)
+            drawRectStupid(backgroundColor, l1 - 4, i2 - 3, l1 - 3, i2 + k + 3)
+            drawRectStupid(backgroundColor, l1 + maxWidth + 3, i2 - 3, l1 + maxWidth + 4, i2 + k + 3)
+
+            drawRectStupid(borderColor, l1 - 3, i2 - 3 + 1, l1 - 3 + 1, i2 + k + 3 - 1)
+            drawRectStupid(borderColor, l1 + maxWidth + 2, i2 - 3 + 1, l1 + maxWidth + 3, i2 + k + 3 - 1)
+            drawRectStupid(borderColor, l1 - 3, i2 - 3, l1 + maxWidth + 3, i2 - 3 + 1)
+            drawRectStupid(borderColor, l1 - 3, i2 + k + 2, l1 + maxWidth + 3, i2 + k + 3)
+
+            lore.forEach((line, i)=>{
+                Renderer.drawStringWithShadow(line, l1, i2)
+
+                if(i===0) i2 += 2
+                i2 += 10
+            })
+        }
     }
 
     /**
