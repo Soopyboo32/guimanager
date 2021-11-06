@@ -6,7 +6,7 @@ let startTime = Date.now()
 
 let loadingImage = undefined
 new Thread(()=>{
-    let buffImage = javax.imageio.ImageIO.read(new java.io.File(com.chattriggers.ctjs.CTJS.INSTANCE.configLocation.toURI().normalize().getRawPath()+ "ChatTriggers/modules/guimanager/Resources/loading-icon.jpg"))
+    let buffImage = javax.imageio.ImageIO.read(new java.io.File(com.chattriggers.ctjs.CTJS.INSTANCE.configLocation.toURI().normalize().getRawPath().substr(1)+ "ChatTriggers/modules/guimanager/Resources/loading-icon.jpg"))
     loadingImage = new Image(buffImage)
 }).start()
 

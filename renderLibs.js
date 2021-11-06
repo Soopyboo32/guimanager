@@ -64,7 +64,7 @@ class RenderLibs {
      * @param {Number} scale The scale of the string (1 = default, 2=double, ect) 
      */
     drawStringCentered = function(text, x, y, scale){
-        this.drawString(text, x-((Renderer.getStringWidth(ChatLib.removeFormatting(text))/2)*scale), y-((9*scale)/2),scale)
+        this.drawString(text, x-((Renderer.getStringWidth(ChatLib.removeFormatting(text))/2)*scale), y,scale)
     }
     /**
      * Draws a string at a location with a scale (rendering from middle left)
@@ -74,7 +74,7 @@ class RenderLibs {
      * @param {Number} scale The scale of the string (1 = default, 2=double, ect) 
      */
     drawStringCenteredVertically = function(text, x, y, scale){
-        this.drawString(text, x, y-((9*scale)/2),scale)
+        this.drawString(text, x, y-((8*scale)/2),scale)
     }
     /**
      * Draws a string at a location with a scale (rendering from middle middle)
@@ -84,7 +84,7 @@ class RenderLibs {
      * @param {Number} scale The scale of the string (1 = default, 2=double, ect) 
      */
     drawStringCenteredFull = function(text, x, y, scale){
-        this.drawStringCentered(text, x, y-((9*scale)/2),scale)
+        this.drawStringCentered(text, x, y-((8*scale)/2),scale)
     }
     /**
      * Draws a string at a location with a scale that will get smaller if the string goes over the max width (rendering from top left)

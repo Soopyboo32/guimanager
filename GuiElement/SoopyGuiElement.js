@@ -181,6 +181,11 @@ class SoopyGuiElement{
      * @returns {SoopyGuiElement} This for method chaining
      */
      addChild(child){
+        
+        if(child.parent){
+            child.parent.removeChild(child)
+        }
+
         let theParent = this.innerObjectPaddingThing || this
         child.setParent(theParent).setMain(this.main)
         theParent.children.push(child)
