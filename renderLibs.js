@@ -9,18 +9,30 @@ let basicUrlRegex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/
 
 let imagesCache = {}
 
-function getImageFromCache(url){
+function getImageFromCache(url, waitForLoad=false, noDownload){
     let urlId =url.replace(/[^A-z]/g,"")
+
+    if(noDownload) return imagesCache[urlId]
+
     if(imagesCache[urlId] === undefined){
         imagesCache[urlId] = "LOADING"
-        new Thread(()=>{
+        if(!waitForLoad){
+            new Thread(()=>{
+                try{
+                    imagesCache[urlId] = new Image("mm_" + urlId,url)
+                }catch(e){
+                    imagesCache[urlId] = new Image("mm_" + url.replace("https://","http://").replace(/[^A-z]/g,""),url.replace("https://","http://"))
+                }
+            }).start()
+            return undefined
+        }else{
             try{
                 imagesCache[urlId] = new Image("mm_" + urlId,url)
             }catch(e){
                 imagesCache[urlId] = new Image("mm_" + url.replace("https://","http://").replace(/[^A-z]/g,""),url.replace("https://","http://"))
             }
-        }).start()
-        return undefined
+            return imagesCache[urlId]
+        }
     }
     if(imagesCache[urlId] === "LOADING"){
         return undefined
@@ -42,6 +54,24 @@ class RenderLibs {
         this.lastSizzorW = 0
         this.lastSizzorH = 0
         this.scizzoring = false
+    }
+
+    /**
+     * Loads an image, will download it if needed
+     * @param {String} url 
+     * @returns {Image} the image
+     */
+    getImage(url, waitForLoad = false){
+        return getImageFromCache(url, waitForLoad)
+    }
+
+    /**
+     * Loads an image, will NOT download it if needed
+     * @param {String} url 
+     * @returns {Image} the image
+     */
+    getImageNoDownload(url){
+        return getImageFromCache(url, false, true)
     }
 
     /**
