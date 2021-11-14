@@ -36,21 +36,28 @@ class SoopyTextElement extends SoopyGuiElement{
 
         renderEvent.setHandler((mouseX, mouseY, partialTicks)=>{
 
-            let scale = Math.min(this.maxScale.get(), this.location.getWidthExact()/((Renderer.getStringWidth(ChatLib.removeFormatting(this.text)))), this.location.getHeightExact()/10)
+            let textLines = this.text.split("\n")
+            let maxWidth = textLines.reduce((max, line)=>{
+                return Math.max(max, Renderer.getStringWidth(ChatLib.removeFormatting(line)))
+            }, 0)
 
-            let renderX = this.location.getXExact()
+            let scale = Math.min(this.maxScale.get(), this.location.getWidthExact()/(maxWidth), this.location.getHeightExact()/(10*textLines.length))
+
             let renderY = this.location.getYExact()
 
-            if(this.centeredX){
-                renderX += (this.location.getWidthExact()/2)
-                renderX -= (Renderer.getStringWidth(ChatLib.removeFormatting(this.text))-1)*scale/2
-            }
             if(this.centeredY){
-                renderY += this.location.getHeightExact()/2
+                renderY += this.location.getHeightExact()/2-5*(textLines.length-1)*scale
                 renderY -= 9*scale/2
             }
 
-            RenderLib.drawString(this.text, renderX, renderY, scale)
+            textLines.forEach((line, index)=>{
+                let renderX = this.location.getXExact()
+                if(this.centeredX){
+                    renderX += (this.location.getWidthExact()/2)-((Renderer.getStringWidth(ChatLib.removeFormatting(line))))*scale/2
+                }
+
+                RenderLib.drawString(line, renderX, renderY+index*10*scale, scale)
+            })
         })
 
         this.events.push(renderEvent)
