@@ -137,6 +137,13 @@ class EditableText extends SoopyGuiElement {
                 break;
             case 15: //tab
                 break;
+            case 47: //v
+                if(this.main.ctGui.isControlDown()){
+                    this.text = this.text.substring(0, this.cursorTextLocationId) + Java.type("net.minecraft.client.gui.GuiScreen").func_146277_j() + this.text.substring(this.cursorTextLocationId)
+                    
+                    this.cursorTextLocationId+=Java.type("net.minecraft.client.gui.GuiScreen").func_146277_j().length
+                    break;
+                }
             case 1: //escape i think
                 this.selected = false
                 break;
