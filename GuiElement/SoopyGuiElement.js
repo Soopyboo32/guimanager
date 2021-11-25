@@ -129,7 +129,6 @@ class SoopyGuiElement{
      */
     triggerEvent(eventType, data=[]){
         if(!this.visable && eventType === Enum.EVENT.RENDER) return;
-
         for(let event of this.events){
             if(event.eventType === eventType){
                 event._trigger(this, data)

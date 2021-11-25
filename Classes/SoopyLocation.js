@@ -32,7 +32,7 @@ class SoopyLocation {
         this.xCache = undefined
         this.yCache = undefined
 
-        this.scroll = new SoopyPosition(0, 0).setRelative(false, false).shouldNegativeWrap(false).setAnimMode("sin_out")
+        this.scroll = new SoopyPosition(0, 0).setRelative(false, false).shouldNegativeWrap(false).setAnimMode("sin_out").enableCache()
 
         this.shouldCache = false
 
@@ -102,6 +102,7 @@ class SoopyLocation {
         this.heightCache = undefined
         this.xCache = undefined
         this.yCache = undefined
+        this.scroll.clearCache()
     }
 
     /**

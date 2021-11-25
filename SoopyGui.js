@@ -345,7 +345,7 @@ function openCommandConsole(gui){
         if(commandTextBox.text.selected){
             let text = commandTextBox.text.text.split("§7")[0]
             if(commandTextBox.text.cursorTextLocationId > text.length) commandTextBox.text.cursorTextLocationId = text.length
-            console.log(keyId)
+            // console.log(keyId)
             if(keyId===15){//tab
                 commandTextBox.setText(commandTextBox.text.text.split("§7").join(""))
             }

@@ -38,6 +38,10 @@ class SoopyPosition {
         this.yIsRelative = true
 
         this.shouldNegativeWrapV=true
+
+        this.xCache = undefined
+        this.yCache = undefined
+        this.shouldCache = false
     }
 
     /**
@@ -86,6 +90,14 @@ class SoopyPosition {
     }
 
     getXAsExact(ref, useRef=true){
+        if(this.shouldCache){
+            if(this.xCache) return this.xCache
+            this.xCache = this._getXAsExact(ref, useRef)
+            return this.xCache
+        }
+        return this._getXAsExact(ref, useRef)
+    }
+    _getXAsExact(ref, useRef=true){
         if(this.xIsRelative) return SoopyPosition.positionToExact(this.x.get(),true, ref)
 
         if(this.x.get()<0 && this.shouldNegativeWrapV){
@@ -99,6 +111,14 @@ class SoopyPosition {
         return ref[0]+this.x.get()
     }
     getYAsExact(ref, useRef=true){
+        if(this.shouldCache){
+            if(this.yCache) return this.yCache
+            this.yCache = this._getYAsExact(ref, useRef)
+            return this.yCache
+        }
+        return this._getYAsExact(ref, useRef)
+    }
+    _getYAsExact(ref, useRef=true){
         if(this.yIsRelative) return SoopyPosition.positionToExact(this.y.get(),false, ref)
 
         if(this.y.get()<0 && this.shouldNegativeWrapV){
@@ -125,6 +145,32 @@ class SoopyPosition {
     setRelative(x, y){
         this.xIsRelative = x
         this.yIsRelative = y
+        return this
+    }
+
+    /**
+     * Clears the location cache, should be run every frame
+     */
+    clearCache(){
+        this.xCache = undefined
+        this.yCache = undefined
+    }
+
+    /**
+     * enables caching
+     * @returns {SoopyLocation} this for method chaining
+     */
+    enableCache(){
+        this.shouldCache = true
+        return this
+    }
+
+    /**
+     * disables caching
+     * @returns {SoopyLocation} this for method chaining
+     */
+    disableCache(){
+        this.shouldCache = false
         return this
     }
 }
