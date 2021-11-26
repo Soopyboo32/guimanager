@@ -29,16 +29,26 @@ class SoopyRenderEvent extends SoopyEventListener{
     _trigger(caller, args){
         let boundingBox = caller.getBoundingBox()
         
-        if(boundingBox){
-            if(!caller.main.isDebugEnabled)renderLibs.scizzorFast(boundingBox[0], boundingBox[1], boundingBox[2]-boundingBox[0], boundingBox[3]-boundingBox[1])
-            super._trigger(caller, args)
-            
-            if(!caller.main.isDebugEnabled)renderLibs.stopScizzor()
+        if(!caller.main.isDebugEnabled)renderLibs.scizzorFast(boundingBox[0], boundingBox[1], boundingBox[2]-boundingBox[0], boundingBox[3]-boundingBox[1])
+        super._trigger(caller, args)
+        
+        if(!caller.main.isDebugEnabled)renderLibs.stopScizzor()
 
-            if(caller.main.isDebugEnabled && caller.hovered && caller.children.map(a=>a.hovered).indexOf(true) === -1){
-                Renderer.drawRect(Renderer.color(255, 0, 0, 100),boundingBox[0], boundingBox[1], boundingBox[2]-boundingBox[0], boundingBox[3]-boundingBox[1])
-            }
+        if(caller.main.isDebugEnabled && caller.hovered && caller.children.map(a=>a.hovered).indexOf(true) === -1){
+            Renderer.drawRect(Renderer.color(255, 0, 0, 100),boundingBox[0], boundingBox[1], boundingBox[2]-boundingBox[0], boundingBox[3]-boundingBox[1])
         }
+    }
+
+    /**
+     * Calculates wether an event should be triggered or not
+     * 
+     * This will also propogate to the children
+     * So it should be "STATIC" and not refer to the instance
+     * @param {*} caller 
+     * @param {*} args 
+     */
+    _shouldTrigger(caller, args){
+        return !!caller.getBoundingBox()
     }
 }
 

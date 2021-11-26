@@ -7,7 +7,7 @@ class ButtonWithArrow extends SoopyBoxElement{
     constructor(){
         super();
 
-        this.text = new SoopyTextElement().setMaxTextScale(2).setLocation(0, 0, 0.8, 1)
+        this.text = new SoopyTextElement().setMaxTextScale(2).setLocation(0, 0, 0.9, 1)
 
         this.arrow = new SoopyTextElement().setText("§7>").setMaxTextScale(2).setLocation(0.9, 0, 0.1, 1)
 

@@ -47,6 +47,19 @@ class SoopyEventListener{
     _trigger(caller, args){
         this.handler(...args)
     }
+
+    
+    /**
+     * Calculates wether an event should be triggered or not
+     * 
+     * This will also propogate to the children
+     * So it should be "STATIC" and not refer to the instance
+     * @param {*} caller 
+     * @param {*} args 
+     */
+    _shouldTrigger(caller, args){
+        return true
+    }
 }
 
 export default SoopyEventListener

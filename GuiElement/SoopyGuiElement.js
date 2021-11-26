@@ -129,14 +129,19 @@ class SoopyGuiElement{
      */
     triggerEvent(eventType, data=[]){
         if(!this.visable && eventType === Enum.EVENT.RENDER) return;
+        let shouldTrigger = undefined
         for(let event of this.events){
             if(event.eventType === eventType){
-                event._trigger(this, data)
+                if(shouldTrigger===undefined) shouldTrigger = event._shouldTrigger(this, data)
+                if(shouldTrigger) event._trigger(this, data)
             }
         }
 
-        for(let child of this.children){
-            child.triggerEvent(eventType, data)
+        if(shouldTrigger===undefined) shouldTrigger = true
+        if(shouldTrigger){
+            for(let child of this.children){
+                child.triggerEvent(eventType, data)
+            }
         }
     }
 
@@ -197,7 +202,8 @@ class SoopyGuiElement{
      * @returns {SoopyGuiElement} This for method chaining
      */
     setLore(lore){
-        this.lore = lore
+        if(typeof lore !== "object") return this
+        this.lore = Object.values(lore)
         return this
     }
 
