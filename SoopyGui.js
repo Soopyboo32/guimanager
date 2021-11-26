@@ -110,9 +110,9 @@ class SoopyGui{
          **/
         this.enabled = true
 
-        this.eventsList.push(register("tick",()=>{
+        this.eventsList.push(register("step",()=>{
             if(this.optimisedLocations && !this.slowLocations) this.element.triggerEvent(Enums.EVENT.RESET_FRAME_CACHES)
-        }))
+        }).setFps(10))
 
         this.eventsList.push(register("step",()=>{
             if(this.slowLocations) this.element.triggerEvent(Enums.EVENT.RESET_FRAME_CACHES)
