@@ -2,12 +2,18 @@
 /// <reference lib="es2015" />
 
 const GL11 = Java.type("org.lwjgl.opengl.GL11");
+const GlStateManager = Java.type("net.minecraft.client.renderer.GlStateManager");
+
+const DefaultVertexFormats = Java.type("net.minecraft.client.renderer.vertex.DefaultVertexFormats")
 
 let imageRegex = /!\[.*?\]\((.*?)\)/g
 let urlRegex = /\[(.*?)\]\(.*?\)/g
 let basicUrlRegex = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm
 
 let imagesCache = {}
+
+let Tessellator = Java.type("net.minecraft.client.renderer.Tessellator").func_178181_a()
+let WorldRenderer = Tessellator.func_178180_c()
 
 function getImageFromCache(url, waitForLoad=false, noDownload){
     let urlId =url.replace(/[^A-z]/g,"")
@@ -228,6 +234,7 @@ class RenderLibs {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
         this.scizzoring = false
     }
+
     /**
      * Draws a rectangle on the screen with a border of slightly offset colors
      * @param {Array<Number>} color The colors in the format [r,g,b]
@@ -241,11 +248,67 @@ class RenderLibs {
         let colorR = color[0]
         let colorG = color[1]
         let colorB = color[2]
+
+        GlStateManager.func_179147_l()//GlStateManager.enableBlend()
+        GlStateManager.func_179090_x()//GlStateManager.disableTexture2D()
+        GlStateManager.func_179120_a(770, 771, 1, 0)//GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+
+        //START DRAWING CENTERAL RECTANGLE
+        GlStateManager.func_179124_c(colorR/255,colorG/255,colorB/255) //GlStateManager.color(r, g, b)
+
+        WorldRenderer.func_181668_a(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.field_181705_e/*POSITION*/ ) //WorldRenderer.begin()
+        
+        WorldRenderer.func_181662_b(x+borderWidth, y+h-borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+w-borderWidth, y+h-borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+w-borderWidth, y+borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+borderWidth, y+borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+
+        Tessellator.func_78381_a()
+        //END DRAWING CENTERAL RECTANGLE
+
+        //START DRAWING TOP+LEFT RECTANGLE
+        GlStateManager.func_179124_c((colorR-20)/255, (colorG-20)/255, (colorB-20)/255) //GlStateManager.color(r, g, b)
+
+        WorldRenderer.func_181668_a(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.field_181705_e/*POSITION*/ ) //WorldRenderer.begin()
+
+        WorldRenderer.func_181662_b(x+borderWidth, y+borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+w-borderWidth, y+borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+w-borderWidth, y, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x, y, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x, y+h-borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+borderWidth, y+h-borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+
+        Tessellator.func_78381_a()
+        //END DRAWING TOP+LEFT RECTANGLE
+
+        //START DRAWING BOTTOM+RIGHT RECTANGLE
+        GlStateManager.func_179124_c((colorR-60)/255, (colorG-60)/255, (colorB-60)/255) //GlStateManager.color(r, g, b)
+
+        WorldRenderer.func_181668_a(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.field_181705_e/*POSITION*/ ) //WorldRenderer.begin()
+
+        WorldRenderer.func_181662_b(x+w, y+h, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+w, y, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+w-borderWidth, y, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x+w-borderWidth, y+h-borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x, y+h-borderWidth, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+        WorldRenderer.func_181662_b(x, y+h, 0).func_181675_d()//WorldRenderer.pos(x, y, z).endVertex()
+
+        Tessellator.func_78381_a()
+        //END DRAWING BOTTOM+RIGHT RECTANGLE
+
+        GlStateManager.func_179124_c(1,1,1) //GlStateManager.color(r, g, b)
+        GlStateManager.func_179098_w()//GlStateManager.enableTexture2D()
+        GlStateManager.func_179084_k()//GlStateManager.disableBlend()
+        
+        /* OLD RENDER CODE
         Renderer.drawRect(Renderer.color(colorR, colorG, colorB),x+borderWidth,y+borderWidth,w-borderWidth*2,h-borderWidth*2)
+
         Renderer.drawRect(Renderer.color(colorR-20*(color[3]?-1:1), colorG-20*(color[3]?-1:1), colorB-20*(color[3]?-1:1)),x,y,borderWidth,h)
         Renderer.drawRect(Renderer.color(colorR-20*(color[3]?-1:1), colorG-20*(color[3]?-1:1), colorB-20*(color[3]?-1:1)),x,y,w,borderWidth)
+
         Renderer.drawRect(Renderer.color(colorR-60*(color[3]?-1:1), colorG-60*(color[3]?-1:1), colorB-60*(color[3]?-1:1)),x+w-borderWidth,y,borderWidth,h)
         Renderer.drawRect(Renderer.color(colorR-60*(color[3]?-1:1), colorG-60*(color[3]?-1:1), colorB-60*(color[3]?-1:1)),x,y+h-borderWidth,w,borderWidth)
+        */
     }
     /** 
      * Draws a Block of text with markup at a location

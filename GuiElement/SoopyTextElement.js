@@ -37,9 +37,11 @@ class SoopyTextElement extends SoopyGuiElement{
         renderEvent.setHandler((mouseX, mouseY, partialTicks)=>{
 
             let textLines = this.text.split("\n")
-            let maxWidth = textLines.reduce((max, line)=>{
-                return Math.max(max, Renderer.getStringWidth(ChatLib.removeFormatting(line)))
-            }, 0)
+            let maxWidth = 0
+            for(let line of textLines){
+                let lineWidth = Renderer.getStringWidth(ChatLib.addColor(line))
+                if(lineWidth > maxWidth) maxWidth = lineWidth
+            }
 
             let scale = Math.min(this.maxScale.get(), this.location.getWidthExact()/(maxWidth), this.location.getHeightExact()/(10*textLines.length))
 
@@ -50,14 +52,15 @@ class SoopyTextElement extends SoopyGuiElement{
                 renderY -= 9*scale/2
             }
 
-            textLines.forEach((line, index)=>{
+            for(let index in textLines){
+                let line = textLines[index]
                 let renderX = this.location.getXExact()
                 if(this.centeredX){
-                    renderX += (this.location.getWidthExact()/2)-((Renderer.getStringWidth(ChatLib.removeFormatting(line))))*scale/2
+                    renderX += (this.location.getWidthExact()/2)-((Renderer.getStringWidth(ChatLib.addColor(line))))*scale/2
                 }
 
                 RenderLib.drawString(line, renderX, renderY+index*10*scale, scale)
-            })
+            }
         })
 
         this.events.push(renderEvent)

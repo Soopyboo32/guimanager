@@ -1,4 +1,4 @@
-import SoopyRenderEvent from "../EventListener/SoopyRenderEvent";
+import SoopyHoverChangeEvent from "../EventListener/SoopyHoverChangeEvent";
 import Toggle from "./Toggle";
 
 const { default: SoopyBoxElement } = require("./SoopyBoxElement");
@@ -16,9 +16,9 @@ class BoxWithToggle extends SoopyBoxElement{
 
         this.directionRight = true
         
-        let renderEvent = new SoopyRenderEvent()
+        let hoverEvent = new SoopyHoverChangeEvent()
 
-        renderEvent.setHandler(()=>{
+        hoverEvent.setHandler(()=>{
             if(this.hovered){
                 this.text.setMaxTextScale(2.5, 1000)
 
@@ -35,7 +35,7 @@ class BoxWithToggle extends SoopyBoxElement{
 
          })
 
-        this.events.push(renderEvent)
+        this.events.push(hoverEvent)
     }
 
     /**

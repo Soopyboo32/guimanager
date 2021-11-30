@@ -1,4 +1,3 @@
-import SoopyRenderEvent from "../EventListener/SoopyRenderEvent";
 import SoopyTextElement from "./SoopyTextElement"
 
 const { default: ButtonWithArrow } = require("./ButtonWithArrow");

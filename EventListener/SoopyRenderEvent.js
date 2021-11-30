@@ -28,7 +28,7 @@ class SoopyRenderEvent extends SoopyEventListener{
      */
     _trigger(caller, args){
         let boundingBox = caller.getBoundingBox()
-        
+
         if(!caller.main.isDebugEnabled)renderLibs.scizzorFast(boundingBox[0], boundingBox[1], boundingBox[2]-boundingBox[0], boundingBox[3]-boundingBox[1])
         super._trigger(caller, args)
         

@@ -55,7 +55,11 @@ class SoopyNumber {
      * @returns {Number} The number
      */
     get(){
-        if(this.currAnimTime===0 || this.lastNumberUpdate+this.currAnimTime < Date.now()) return this.number
+        if(this.currAnimTime===0) return this.number
+        if(this.lastNumberUpdate+this.currAnimTime < Date.now()){
+            this.currAnimTime = 0
+            return this.number
+        }
 
         switch(this.animMode){
             case "sin":return this.lastNumber+((1-((Math.cos(Math.PI*(Date.now()-this.lastNumberUpdate)/this.currAnimTime)+1)/2))*(this.number-this.lastNumber))

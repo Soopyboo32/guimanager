@@ -1,4 +1,4 @@
-import SoopyRenderEvent from "../EventListener/SoopyRenderEvent";
+import SoopyHoverChangeEvent from "../EventListener/SoopyHoverChangeEvent";
 import SoopyGuiElement from "./SoopyGuiElement";
 
 const { default: SoopyTextElement } = require("./SoopyTextElement");
@@ -15,9 +15,9 @@ class TextWithArrow extends SoopyGuiElement{
 
         this.directionRight = true
         
-        let renderEvent = new SoopyRenderEvent()
+        let hoverEvent = new SoopyHoverChangeEvent()
 
-        renderEvent.setHandler(()=>{
+        hoverEvent.setHandler(()=>{
             if(this.hovered){
                 this.arrow.setMaxTextScale(3, 1000)
                 this.arrow.location.location.x.set(this.directionRight?0.85:0, 700)
@@ -31,7 +31,7 @@ class TextWithArrow extends SoopyGuiElement{
             }
         })
 
-        this.events.push(renderEvent)
+        this.events.push(hoverEvent)
     }
 
     /**

@@ -1,4 +1,4 @@
-import SoopyRenderEvent from "../EventListener/SoopyRenderEvent";
+import SoopyHoverChangeEvent from "../EventListener/SoopyHoverChangeEvent";
 
 const { default: SoopyBoxElement } = require("./SoopyBoxElement");
 const { default: SoopyTextElement } = require("./SoopyTextElement");
@@ -13,9 +13,9 @@ class BoxWithTextAndDescription extends SoopyBoxElement{
         this.addChild(this.description).addChild(this.text)
 
         
-        let renderEvent = new SoopyRenderEvent()
+        let hoverEvent = new SoopyHoverChangeEvent()
 
-        renderEvent.setHandler(()=>{
+        hoverEvent.setHandler(()=>{
             if(this.hovered){
                 this.text.setMaxTextScale(2.5, 1000)
 
@@ -32,7 +32,7 @@ class BoxWithTextAndDescription extends SoopyBoxElement{
 
          })
 
-        this.events.push(renderEvent)
+        this.events.push(hoverEvent)
     }
 
     setText(text){

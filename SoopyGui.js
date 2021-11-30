@@ -388,6 +388,18 @@ let commandConsoleCommands = {
         gui.slowLocations = true
         new Notification("Enabled optimisations", ["(High setting)"])
     },
+    /**
+     * @param {SoopyGui} gui 
+     */
+    "logguisetup": (gui)=>{
+        function logElement(element, tabs="  "){
+            console.log(tabs+element.constructor.name)
+            element.children.forEach(child=>{
+                logElement(child, tabs+"  ")
+            })
+        }
+        logElement(gui.element)
+    },
     "default": (gui)=>{
         //unknown command
         new Notification("Unknown command", ["Use 'help' for a list of commands!"])

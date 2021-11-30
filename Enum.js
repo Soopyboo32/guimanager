@@ -18,6 +18,7 @@ let Enum = {
         "OPEN_GUI": enumID++,
         "RESET_FRAME_CACHES": enumID++,
         "CONTENT_CHANGE": enumID++,
+        "HOVER_CHANGE": enumID++
     }
 }
 
