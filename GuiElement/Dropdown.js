@@ -102,6 +102,12 @@ class Dropdown extends BoxWithText {
         this.searchElement.location.location.y.set((this.location.getHeightExact()+4)*Math.min(5, Object.keys(this.options).length), 0)
         this.searchElement.location.size.y.set(this.location.getHeightExact(), 0)
 
+        this.searchElement.setText("")
+        this.search = ""
+
+        this.itemsElement._scrollAmount = 0
+        this.itemsElement.location.scroll.y.set(0,250)
+
         this.regenOptions()
     }
 

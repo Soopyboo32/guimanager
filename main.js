@@ -15,6 +15,7 @@ import SoopyMarkdownElement from './GuiElement/SoopyMarkdownElement.js';
 import ProgressBar from './GuiElement/ProgressBar.js';
 import SoopyImageElement from './GuiElement/SoopyImageElement';
 import SoopyGui from "./SoopyGui";
+import SoopyOpenGuiEvent from "./EventListener/SoopyOpenGuiEvent"
 
 let testGui = new SoopyGui();
 
@@ -22,6 +23,11 @@ testGui.setOpenCommand("guitest")
 
 let box = new SoopyBoxElement().setLocation(0.25, 0.25, 0.5, 0.5).setScrollable(true)
 testGui.element.addChild(box)
+
+box.addEvent(new SoopyOpenGuiEvent().setHandler(()=>{
+    box.location.size.y.set(0,0)
+    box.location.size.y.set(0.5,500)
+}))
 
 box.addChild(new SoopyTextElement().setText("§0Hello World!").setMaxTextScale(100).setLocation(0.1, 0.05, 0.8, 0.3))
 
