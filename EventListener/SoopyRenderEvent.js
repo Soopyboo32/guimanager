@@ -34,7 +34,7 @@ class SoopyRenderEvent extends SoopyEventListener{
         
         if(!caller.main.isDebugEnabled)renderLibs.stopScizzor()
 
-        if(caller.main.isDebugEnabled && caller.hovered && caller.children.map(a=>a.hovered).indexOf(true) === -1){
+        if(caller.main.isDebugEnabled && caller.hovered){
             Renderer.drawRect(Renderer.color(255, 0, 0, 100),boundingBox[0], boundingBox[1], boundingBox[2]-boundingBox[0], boundingBox[3]-boundingBox[1])
         }
     }

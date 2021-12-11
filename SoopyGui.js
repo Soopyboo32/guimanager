@@ -71,6 +71,15 @@ class SoopyGui{
           * A list of all the ct triggers so they can get disabled on gui delete
           **/
          this.eventsList = []
+
+         /**
+          * The currenatly hovered gui element, this will be the smallest thing with all other hovered elements being its parents
+          */
+         this.hoveredElement = undefined
+         /**
+          * The currently last rendered hovered element, internal use to calculate actual hovered element
+          */
+         this._hoveredElement = undefined
     
 
         this.eventsList.push(this.ctGui.registerDraw((mouseX, mouseY, partialTicks) =>{
@@ -192,9 +201,33 @@ class SoopyGui{
 
             if(!this.optimisedLocations && !this.slowLocations) this.element.triggerEvent(Enums.EVENT.RESET_FRAME_CACHES)
 
+            let oldHoveredElement = this._hoveredElement
+
             this.element.triggerEvent(Enums.EVENT.RENDER, [mouseX, mouseY, partialTicks])
 
             Notification.doRender()
+
+            if(oldHoveredElement !== this._hoveredElement){
+                while(oldHoveredElement){
+                    oldHoveredElement.hovered = false
+
+                    oldHoveredElement.triggerEvent(Enums.EVENT.HOVER_CHANGE, [false])
+
+                    oldHoveredElement = oldHoveredElement.parent
+                }
+
+                let newHoveredElement = this._hoveredElement
+                while(newHoveredElement){
+                    newHoveredElement.hovered = true
+
+                    newHoveredElement.triggerEvent(Enums.EVENT.HOVER_CHANGE, [true])
+
+                    newHoveredElement = newHoveredElement.parent
+                }
+            }
+
+            this.hoveredElement = this._hoveredElement
+            
 
             if(this._loreData){ //TODO: move into function in renderLibs
                 let [x, y, lore] = this._loreData

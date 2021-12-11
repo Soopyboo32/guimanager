@@ -25,10 +25,14 @@ class SoopyBoxElement extends SoopyGuiElement{
 
         let renderEvent = new SoopyRenderEvent()
 
-        renderEvent.setHandler((mouseX, mouseY, partialTicks)=>{
-            let theColor = [this.color[0].get()+this.colorOffset[0].get(), this.color[1].get()+this.colorOffset[1].get(), this.color[2].get()+this.colorOffset[2].get()]
+        this.actuallyDrawBox = true
 
-            RenderLib.drawBox(theColor,this.location.getXExact(),this.location.getYExact(),this.location.getWidthExact(),this.location.getHeightExact(),3)
+        renderEvent.setHandler((mouseX, mouseY, partialTicks)=>{
+            if(this.actuallyDrawBox){
+                let theColor = [this.color[0].get()+this.colorOffset[0].get(), this.color[1].get()+this.colorOffset[1].get(), this.color[2].get()+this.colorOffset[2].get()]
+
+                RenderLib.drawBox(theColor,this.location.getXExact(),this.location.getYExact(),this.location.getWidthExact(),this.location.getHeightExact(),3)
+            }
         })
 
         this.events.push(renderEvent)
@@ -42,6 +46,11 @@ class SoopyBoxElement extends SoopyGuiElement{
         this.addChild(this.innerObject)
 
         this.setInnerObject(this.innerObject)
+    }
+
+    renderBox(enabled){
+        this.actuallyDrawBox = enabled
+        return this
     }
 
     /**

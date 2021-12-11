@@ -81,7 +81,7 @@ class SoopyGuiElement{
         this._scrollAmount = 0
 
         this.events.push(new SoopyMouseScrollEvent().setHandler((mouseX, mouseY, scroll)=>{
-            if(this.scrollable){
+            if(this.scrollable && this.hovered){
                 this._scrollAmount+= scroll*30
                 let maxScroll = 0
                 for(let child of this.children){
@@ -98,12 +98,9 @@ class SoopyGuiElement{
         let renderEvent = new SoopyRenderEvent()
 
         renderEvent.setHandler((mouseX, mouseY)=>{
-            let lastHovered = this.hovered
-
-            this.hovered = false
             if((!this.parent || this.parent.hovered) && mouseX > this.location.getXExact() && mouseX < this.location.getXExact()+this.location.getWidthExact()
                 && mouseY > this.location.getYExact() && mouseY < this.location.getYExact()+this.location.getHeightExact()){
-                this.hovered = true
+                this.main._hoveredElement = this
 
                 if(this.lore){
                     //Render Lore
@@ -111,9 +108,6 @@ class SoopyGuiElement{
                     this.main._loreData = [mouseX, mouseY, this.lore]
                 }
             }
-
-            
-            if(this.hovered !== lastHovered) this.triggerEvent(Enum.EVENT.HOVER_CHANGE, [this.hovered])
         })
 
         this.events.push(renderEvent)
