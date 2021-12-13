@@ -17,6 +17,8 @@ class Dropdown extends BoxWithText {
         this.text.location.size.x.set(0.7)
         this.text.location.location.x.set(0.05)
 
+        this.colorPrefix = "&0"
+
         this.points = [new SoopyNumber(0),new SoopyNumber(0.5),new SoopyNumber(1),new SoopyNumber(0.5)]
 
         this.addEvent(new SoopyRenderEvent().setHandler(()=>{
@@ -111,6 +113,13 @@ class Dropdown extends BoxWithText {
         this.regenOptions()
     }
 
+    setColorPrefix(pre){
+        this.colorPrefix = pre
+        
+        this.text.setText(this.colorPrefix+this.options[this.selectedOption])
+        return this
+    }
+
     close(){
         this.points[0].set(0,250)
         this.points[1].set(0.5,250)
@@ -160,7 +169,7 @@ class Dropdown extends BoxWithText {
 
     setSelectedOption(option){
         this.selectedOption = option
-        this.text.setText("§0"+this.options[option])
+        this.text.setText(this.colorPrefix+this.options[option])
         return this
     }
 
