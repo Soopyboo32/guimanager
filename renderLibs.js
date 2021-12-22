@@ -1,9 +1,6 @@
 /// <reference types="../CTAutocomplete" />
 /// <reference lib="es2015" />
 
-const GL11 = Java.type("org.lwjgl.opengl.GL11");
-const GlStateManager = Java.type("net.minecraft.client.renderer.GlStateManager");
-
 const DefaultVertexFormats = Java.type("net.minecraft.client.renderer.vertex.DefaultVertexFormats")
 
 let imageRegex = /!\[.*?\]\((.*?)\)/g

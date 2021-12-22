@@ -3,10 +3,6 @@
 
 import SoopyRenderEvent from "../EventListener/SoopyRenderEvent"
 import SoopyGuiElement from "./SoopyGuiElement"
-const GlStateManager = Java.type("net.minecraft.client.renderer.GlStateManager");
-const GL11 = Java.type("org.lwjgl.opengl.GL11");
-const GL30 = Java.type("org.lwjgl.opengl.GL30");
-
 import RenderLib from "../renderLibs"
 import SoopyNumber from "../Classes/SoopyNumber"
 import renderLibs from "../renderLibs";
