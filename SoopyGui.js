@@ -203,6 +203,7 @@ class SoopyGui{
 
             let oldHoveredElement = this._hoveredElement
 
+            this.element.triggerEvent(Enums.EVENT.RENDER_UPDATE, [mouseX, mouseY, partialTicks])
             this.element.triggerEvent(Enums.EVENT.RENDER, [mouseX, mouseY, partialTicks])
 
             Notification.doRender()
@@ -211,7 +212,7 @@ class SoopyGui{
                 while(oldHoveredElement){
                     oldHoveredElement.hovered = false
 
-                    oldHoveredElement.triggerEvent(Enums.EVENT.HOVER_CHANGE, [false])
+                    oldHoveredElement.triggerEvent(Enums.EVENT.HOVER_CHANGE, [false], false)
 
                     oldHoveredElement = oldHoveredElement.parent
                 }
@@ -220,7 +221,7 @@ class SoopyGui{
                 while(newHoveredElement){
                     newHoveredElement.hovered = true
 
-                    newHoveredElement.triggerEvent(Enums.EVENT.HOVER_CHANGE, [true])
+                    newHoveredElement.triggerEvent(Enums.EVENT.HOVER_CHANGE, [true], false)
 
                     newHoveredElement = newHoveredElement.parent
                 }

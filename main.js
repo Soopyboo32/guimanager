@@ -22,6 +22,7 @@ let testGui = new SoopyGui();
 testGui.setOpenCommand("guitest")
 
 let box = new SoopyBoxElement().setLocation(0.25, 0.25, 0.5, 0.5).setScrollable(true)
+
 testGui.element.addChild(box)
 
 box.addEvent(new SoopyOpenGuiEvent().setHandler(()=>{

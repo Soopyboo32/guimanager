@@ -11,6 +11,7 @@ let Enum = {
     "EVENT":{
         "RENDER_BACKGROUND":enumID++,
         "RENDER":enumID++,
+        "RENDER_UPDATE":enumID++,
         "MOUSE_CLICK": enumID++,
         "MOUSE_CLICK_GLOBAL": enumID++,
         "KEY_PRESS": enumID++,

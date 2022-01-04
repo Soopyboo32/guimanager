@@ -9,6 +9,7 @@ import SoopyContentChangeEvent from "../EventListener/SoopyContentChangeEvent";
 import Enum from "../Enum";
 import TextBox from "./TextBox";
 import SoopyGuiElement from "./SoopyGuiElement";
+import SoopyRenderUpdateEvent from "../EventListener/SoopyRenderUpdateEvent";
 
 class Dropdown extends BoxWithText {
     constructor(){
@@ -68,7 +69,7 @@ class Dropdown extends BoxWithText {
             this.regenOptions()
         }))
 
-        this.mainElement.addEvent(new SoopyRenderEvent().setHandler(()=>{
+        this.mainElement.addEvent(new SoopyRenderUpdateEvent().setHandler(()=>{
             if(this.mainElement.parent && this.mainElement.location.size.y.get() === 0) this.mainElement.parent.removeChild(this.mainElement)
         }))
         

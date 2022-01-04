@@ -62,6 +62,9 @@ class RenderLibs {
         this.lastSizzorW = 0
         this.lastSizzorH = 0
         this.scizzoring = false
+        this.sizzorOverride = {
+            disabled: false
+        }
     }
 
     /**
@@ -168,6 +171,7 @@ class RenderLibs {
      * @param {Number} height The height of the scizzor
      */
      scizzorFast = function(x, y, width, height){
+         if(this.sizzorOverride.disabled)return
         this.lastSizzorX = x
         this.lastSizzorY = y
         this.lastSizzorW = width
@@ -195,7 +199,8 @@ class RenderLibs {
      * @param {Number} height The height of the scizzor
      */
     scizzor = function(x, y, width, height){
-        if(this.scizzoring){
+         if(this.sizzorOverride.disabled)return
+         if(this.scizzoring){
             if(this.lastSizzorW === 0 || this.lastSizzorH === 0) return;
             let intersect = renderLibs.getIntersectingRectangle({x1:this.lastSizzorX,y1:this.lastSizzorY,x2:this.lastSizzorX+this.lastSizzorW,y2:this.lastSizzorY+this.lastSizzorH},{x1:x,y1:y,x2:x+width,y2:y+height})
             if(intersect === false){
