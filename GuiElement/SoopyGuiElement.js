@@ -181,8 +181,6 @@ class SoopyGuiElement{
             GlStateManager.func_179094_E()
 
             // GlStateManager.func_179109_b(-this.location.getXExact(), -this.location.getYExact(), 0); //translate
-
-            GlStateManager.func_179094_E()
             // renderLibs.sizzorOverride = {
             //     disabled: true
             // }
