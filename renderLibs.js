@@ -575,19 +575,19 @@ class RenderLibs {
      */
     splitStringAtWidth = function(string, width){
         let ret = []
-        let currLen = 0
+        // let currLen = 0
         let lastStr = ""
         let first = true
         string.split(" ").forEach((str)=>{
             if(Renderer.getStringWidth(lastStr + " " + str) > width){
                 ret.push(lastStr)
-                currLen = 0
+                // currLen = 0
                 lastStr = str
             }else{
                 lastStr += (first?"":" ") + str
                 first = false
             }
-            currLen+=Renderer.getStringWidth(str)
+            // currLen+=Renderer.getStringWidth(str)
         })
         ret.push(lastStr)
         return ret;

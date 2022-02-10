@@ -8,7 +8,7 @@ class BoxWithTextAndDescription extends SoopyBoxElement{
         super();
 
         this.text = new SoopyTextElement().setMaxTextScale(2).setLocation(0, 0, 0.8, 0.6)
-        this.description = new SoopyTextElement().setMaxTextScale(1).setLocation(0, 0.6, 0.7, 0.4)
+        this.description = new SoopyTextElement().setMaxTextScale(1).setLocation(0.05, 0.6, 0.7, 0.4)
 
         this.addChild(this.description).addChild(this.text)
 

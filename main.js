@@ -70,7 +70,7 @@ y+=0.2
 
 box.addChild(loading2)
 
-let imageThing = new SoopyImageElement().setLocation(0.1, y, 0.8, 0.2).setImage("https://frontiersinblog.files.wordpress.com/2021/06/frontiers-bioengineering-biotechnology-cow-rumen-microbes-source-of-novel-enzymes-breaking-down-plastic-waste.jpg").loadHeightFromImage()
+let imageThing = new SoopyImageElement().setLocation(0.1, y, 0.8, 0.2).setImage("https://www.nurseriesonline.com.au/wp-content/uploads/2016/05/trees-for-narrow-spaces.jpg").loadHeightFromImage()
 
 let preHeight = y
 

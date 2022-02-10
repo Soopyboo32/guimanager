@@ -3,9 +3,6 @@
 
 import SoopyRenderEvent from "../EventListener/SoopyRenderEvent"
 import SoopyGuiElement from "./SoopyGuiElement"
-import SoopyNumber from "./../Classes/SoopyNumber"
-
-import RenderLib from "../renderLibs"
 import renderLibs from "../renderLibs"
 
 /**
@@ -44,7 +41,7 @@ class SoopyImageElement extends SoopyGuiElement{
                 this.image = renderLibs.getImage(url, true)
 
                 if(this.SloadHeightFromImage){
-                    this.location.size.y.set(this.location.size.x.get()*this.image.getTextureHeight()/this.image.getTextureWidth())
+                    this.location.size.y.set(this.location.getWidthExact()*this.image.getTextureHeight()/this.image.getTextureWidth()/this.location.referanceFrame.getHeightExact())
                     if(this.onImageHeightChangeFunc){
                         this.onImageHeightChangeFunc[0].call(this.onImageHeightChangeFunc[1])
                     }
@@ -53,7 +50,7 @@ class SoopyImageElement extends SoopyGuiElement{
             }).start()
         }else{
             if(this.SloadHeightFromImage){
-                this.location.size.y.set(this.location.size.x.get()*this.image.getTextureHeight()/this.image.getTextureWidth())
+                this.location.size.y.set(this.location.getWidthExact()*this.image.getTextureHeight()/this.image.getTextureWidth()/this.location.referanceFrame.getHeightExact())
                 if(this.onImageHeightChangeFunc){
                     this.onImageHeightChangeFunc[0].call(this.onImageHeightChangeFunc[1])
                 }
@@ -65,7 +62,7 @@ class SoopyImageElement extends SoopyGuiElement{
 
     loadHeightFromImage(){
         if(this.image){
-            this.location.size.y.set(this.location.size.x.get()*this.image.getTextureHeight()/this.image.getTextureWidth())
+            this.location.size.y.set(this.location.getWidthExact()*this.image.getTextureHeight()/this.image.getTextureWidth()/this.location.referanceFrame.getHeightExact())
             if(this.onImageHeightChangeFunc){
                 this.onImageHeightChangeFunc[0].call(this.onImageHeightChangeFunc[1])
             }

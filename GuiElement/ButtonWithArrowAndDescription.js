@@ -8,7 +8,7 @@ class ButtonWithArrowAndDescription extends ButtonWithArrow{
         
         this.text.location.size.y.set(0.6)
 
-        this.description = new SoopyTextElement().setMaxTextScale(1).setLocation(0, 0.6, 0.8, 0.4)
+        this.description = new SoopyTextElement().setMaxTextScale(1).setLocation(0.05, 0.6, 0.8, 0.4)
         this.addChild(this.description)
     }
 
