@@ -26,6 +26,8 @@ import SoopyLocation from "../Classes/SoopyLocation"
 import renderLibs from "../renderLibs"
 import SoopyMouseScrollEvent from "../EventListener/SoopyMouseScrollEvent"
 import SoopyRenderUpdateEvent from "../EventListener/SoopyRenderUpdateEvent";
+import SoopyRenderEvent from "../EventListener/SoopyRenderEvent";
+import SoopyNumber from "../Classes/SoopyNumber";
 
 /**
  * The event listener class, you can create an event and set a handler for it
@@ -103,6 +105,9 @@ class SoopyGuiElement{
         }))
 
         this._scrollAmount = 0
+        this._lastScrolled = 0
+        this._scrollbarHoldY = undefined
+        this._tempScrollbarWidth = new SoopyNumber(0)
 
         this.events.push(new SoopyMouseScrollEvent().setHandler((mouseX, mouseY, scroll)=>{
             if(this.scrollable && this.hovered){
@@ -116,6 +121,33 @@ class SoopyGuiElement{
                 maxScroll -= this.location.getHeightExact()-2
                 this._scrollAmount = Math.min(Math.max(-maxScroll, this._scrollAmount), 0)
                 this.location.scroll.y.set(this._scrollAmount, 100)
+                this._lastScrolled = Date.now()
+            }
+        }))
+
+        this.events.push(new SoopyRenderEvent().setHandler((mouseX, mouseY)=>{
+            //rendering scrollbar stuff
+            if(this.scrollable && (this._tempScrollbarWidth.isAnimating() || Date.now()-this._lastScrolled < 3000 || (mouseX>this.location.getXExact()+this.location.getWidthExact()-32 && mouseX<this.location.getXExact()+this.location.getWidthExact() && mouseY>this.location.getYExact() && mouseY<this.location.getYExact()+this.location.getHeightExact()))){
+                let maxScroll = 0
+                for(let child of this.children){
+                    if(maxScroll < (child.location.getYExact()+child.location.getHeightExact()-this.location.scroll.getYAsExact(undefined, false)) - this.location.getYExact()){
+                        maxScroll = (child.location.getYExact()+child.location.getHeightExact()-this.location.scroll.getYAsExact(undefined, false)) - this.location.getYExact()
+                    }
+                }
+                let scrollBarHeight = this.location.getHeightExact()/maxScroll*this.location.getHeightExact()
+                let scrollBarY = -this.location.scroll.getYAsExact(undefined, false)/(maxScroll)*this.location.getHeightExact()
+                let mouseHover = (mouseX>this.location.getXExact()+this.location.getWidthExact()-32 && mouseX<this.location.getXExact()+this.location.getWidthExact() && mouseY>this.location.getYExact() && mouseY<this.location.getYExact()+this.location.getHeightExact())
+                if(mouseHover){
+                    this._tempScrollbarWidth.set(8,200)
+                }else{
+                    if(Date.now()-this._lastScrolled < 3000){
+                        this._tempScrollbarWidth.set(4,200)
+                    }
+                }
+                Renderer.translate(0,0,10)
+                Renderer.drawRect(Renderer.color(0,0,0), this.location.getXExact()+this.location.getWidthExact()-this._tempScrollbarWidth.get(), this.location.getYExact() + scrollBarY, this._tempScrollbarWidth.get(), scrollBarHeight)
+            }else{
+                this._tempScrollbarWidth.set(0,200)
             }
         }))
 

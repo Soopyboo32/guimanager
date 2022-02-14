@@ -6,7 +6,7 @@ import SoopyEventListener from "../EventListener/SoopyEventListener"
 import renderLibs from "../renderLibs"
 
 /**
- * The render background event, this will run whenever the background of the gui / gui element is rendered
+ * The render  event, this will run whenever the gui element is rendered
  * @class
  * @extends SoopyRenderEvent
  */
