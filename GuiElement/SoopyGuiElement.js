@@ -134,6 +134,7 @@ class SoopyGuiElement{
                         maxScroll = (child.location.getYExact()+child.location.getHeightExact()-this.location.scroll.getYAsExact(undefined, false)) - this.location.getYExact()
                     }
                 }
+                if(maxScroll < this.location.getHeightExact()) return
                 let scrollBarHeight = this.location.getHeightExact()/maxScroll*this.location.getHeightExact()
                 let scrollBarY = -this.location.scroll.getYAsExact(undefined, false)/(maxScroll)*this.location.getHeightExact()
                 let mouseHover = (mouseX>this.location.getXExact()+this.location.getWidthExact()-32 && mouseX<this.location.getXExact()+this.location.getWidthExact() && mouseY>this.location.getYExact() && mouseY<this.location.getYExact()+this.location.getHeightExact())
