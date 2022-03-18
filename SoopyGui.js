@@ -136,7 +136,7 @@ class SoopyGui{
     setOpenCommand(commandName){
         this.eventsList.push(register("command",()=>{
             if(this.enabled) this.open()
-        }).setName(commandName))
+        }).setName(commandName, true))
 
         return this
     }

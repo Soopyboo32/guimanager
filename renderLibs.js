@@ -97,6 +97,19 @@ class RenderLibs {
         Renderer.drawString(text || "undefined", x/scale, y/scale)
         Renderer.scale(1, 1)
     }
+
+    /**
+     * Draws a string at a location with a scale (rendering from top left)
+     * @param {String} text The string to draw
+     * @param {Number} x The x location of the string
+     * @param {Number} y The y location of the string
+     * @param {Number} scale The scale of the string (1 = default, 2=double, ect) 
+     */
+    drawStringShadow = function(text, x, y, scale){
+        Renderer.scale(scale, scale)
+        Renderer.drawStringWithShadow(text || "undefined", x/scale, y/scale)
+        Renderer.scale(1, 1)
+    }
     /**
      * Draws a string at a location with a scale (rendering from top middle)
      * @param {String} text The string to draw
@@ -106,6 +119,16 @@ class RenderLibs {
      */
     drawStringCentered = function(text, x, y, scale){
         this.drawString(text, x-((Renderer.getStringWidth(ChatLib.removeFormatting(text))/2)*scale), y,scale)
+    }
+    /**
+     * Draws a string at a location with a scale (rendering from top middle)
+     * @param {String} text The string to draw
+     * @param {Number} x The x location of the string
+     * @param {Number} y The y location of the string
+     * @param {Number} scale The scale of the string (1 = default, 2=double, ect) 
+     */
+    drawStringCenteredShadow = function(text, x, y, scale){
+        this.drawStringShadow(text, x-((Renderer.getStringWidth(ChatLib.removeFormatting(text))/2)*scale), y,scale)
     }
     /**
      * Draws a string at a location with a scale (rendering from middle left)
