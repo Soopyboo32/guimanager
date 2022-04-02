@@ -35,6 +35,10 @@ class EditableText extends SoopyGuiElement {
         this.cursorTextLocationId = text.length
     }
 
+    getText(){
+        return this.text
+    }
+
     mouseClick(mouseX, mouseY){
         this.selected = true
         this.lastKeyPress = Date.now()

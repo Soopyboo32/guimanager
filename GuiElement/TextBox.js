@@ -14,6 +14,10 @@ class TextBox extends SoopyBoxElement {
         return this
     }
 
+    getText(){
+        return this.text.getText()
+    }
+
     setPlaceholder(placeholder){
         this.text.placeholder = placeholder
         return this;
