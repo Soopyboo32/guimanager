@@ -27,17 +27,17 @@ function getImageFromCache(url, waitForLoad=false, noDownload){
         if(!waitForLoad){
             new Thread(()=>{
                 try{
-                    imagesCache[urlId] = new Image("mm_" + urlId,url)
+                    imagesCache[urlId] = new Image(getBufferedImage(url))
                 }catch(e){
-                    imagesCache[urlId] = new Image("mm_" + url.replace("https://","http://").replace(/[^A-z]/g,""),url.replace("https://","http://"))
+                    imagesCache[urlId] = new Image(getBufferedImage(url.replace("https://","http://")))
                 }
             }).start()
             return undefined
         }else{
             try{
-                imagesCache[urlId] = new Image("mm_" + urlId,url)
+                imagesCache[urlId] = new Image(getBufferedImage(url))
             }catch(e){
-                imagesCache[urlId] = new Image("mm_" + url.replace("https://","http://").replace(/[^A-z]/g,""),url.replace("https://","http://"))
+                imagesCache[urlId] = new Image(getBufferedImage(url.replace("https://","http://")))
             }
             return imagesCache[urlId]
         }
@@ -46,6 +46,12 @@ function getImageFromCache(url, waitForLoad=false, noDownload){
         return undefined
     }
     return imagesCache[urlId]
+}
+
+let URL = Java.type("java.net.URL")
+let ImageIO = Java.type("javax.imageio.ImageIO")
+function getBufferedImage(url) { //bypassess chattriggers image cache
+    return ImageIO.read(new URL(url).openConnection().inputStream)
 }
 
 /**
