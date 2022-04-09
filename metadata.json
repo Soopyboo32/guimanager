@@ -3,6 +3,6 @@
     "description": "A cool utils module to make creating gui's easier",
     "author": "Soopyboo32",
     "entry": "main.js",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "requires": []
 }
