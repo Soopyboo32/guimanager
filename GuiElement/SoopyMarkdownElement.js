@@ -10,12 +10,12 @@ import renderLibs from "../renderLibs"
  * A box.
  * @class
  */
-class SoopyMarkdownElement extends SoopyGuiElement{
+class SoopyMarkdownElement extends SoopyGuiElement {
     /**
      * Creates a {@link SoopyMarkdownElement}
      * @constructor
      */
-    constructor(){
+    constructor() {
 
         super()
 
@@ -25,14 +25,16 @@ class SoopyMarkdownElement extends SoopyGuiElement{
          */
         this.text = ""
 
+        this.textDarkThemeCache = ""
+
         let renderEvent = new SoopyRenderEvent()
 
-        renderEvent.setHandler((mouseX, mouseY, partialTicks)=>{
-            let {height, imageClickData} = renderLibs.renderTextBlockWithMarkup(this.text, this.location.getXExact(), this.location.getYExact()+2, this.location.getWidthExact())
+        renderEvent.setHandler((mouseX, mouseY, partialTicks) => {
+            let { height, imageClickData } = renderLibs.renderTextBlockWithMarkup(this.isDarkThemeEnabled() ? this.textDarkThemeCache : this.text, this.location.getXExact(), this.location.getYExact() + 2, this.location.getWidthExact())
 
             height += 2
 
-            let newHeight = height/this.parent.location.getHeightExact()
+            let newHeight = height / this.parent.location.getHeightExact()
             this.location.size.y.set(newHeight)
         })
 
@@ -44,8 +46,9 @@ class SoopyMarkdownElement extends SoopyGuiElement{
      * @param {string} text - The text to display.
      * @returns {SoopyMarkdownElement} this for method chaining
      */
-    setText(text){
+    setText(text) {
         this.text = text
+        this.textDarkThemeCache = renderLibs.darkThemifyText(text)
         return this
     }
 
@@ -54,12 +57,12 @@ class SoopyMarkdownElement extends SoopyGuiElement{
      * 
      * DONT USE OFTEN AS THIS WILL RENDER THE TEXT = POTENTIAL LAG
      */
-    getHeight(){
-        let {height, imageClickData} = renderLibs.renderTextBlockWithMarkup(this.text, 0, 0, this.location.getWidthExact(), false)
+    getHeight() {
+        let { height, imageClickData } = renderLibs.renderTextBlockWithMarkup(this.text, 0, 0, this.location.getWidthExact(), false)
 
         height += 2
 
-        let newHeight = height/this.parent.location.getHeightExact()
+        let newHeight = height / this.parent.location.getHeightExact()
         this.location.size.y.set(newHeight)
         return newHeight
     }

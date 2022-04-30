@@ -9,7 +9,7 @@ import SoopyNumber from "../Classes/SoopyNumber";
 import Enum from "../Enum";
 
 class EditableText extends SoopyGuiElement {
-    constructor(){
+    constructor() {
         super()
 
         this.text = ""
@@ -24,58 +24,58 @@ class EditableText extends SoopyGuiElement {
 
         this.selected = false
 
-        this.addEvent(new SoopyRenderEvent().setHandler((mouseX, mouseY)=>{this.render.call(this, mouseX, mouseY)}))
-        this.addEvent(new SoopyMouseClickEvent ().setHandler((mouseX, mouseY)=>{this.mouseClick.call(this, mouseX, mouseY)}))
-        this.addEvent(new SoopyKeyPressEvent().setHandler((key, keyId)=>{this.keyPress.call(this, key, keyId)}))
-        this.addEvent(new SoopyGlobalMouseClickEvent ().setHandler((mouseX, mouseY)=>{this.mouseClickG.call(this, mouseX, mouseY)}))
+        this.addEvent(new SoopyRenderEvent().setHandler((mouseX, mouseY) => { this.render.call(this, mouseX, mouseY) }))
+        this.addEvent(new SoopyMouseClickEvent().setHandler((mouseX, mouseY) => { this.mouseClick.call(this, mouseX, mouseY) }))
+        this.addEvent(new SoopyKeyPressEvent().setHandler((key, keyId) => { this.keyPress.call(this, key, keyId) }))
+        this.addEvent(new SoopyGlobalMouseClickEvent().setHandler((mouseX, mouseY) => { this.mouseClickG.call(this, mouseX, mouseY) }))
     }
 
-    setText(text){
+    setText(text) {
         this.text = text
         this.cursorTextLocationId = text.length
     }
 
-    getText(){
+    getText() {
         return this.text
     }
 
-    mouseClick(mouseX, mouseY){
+    mouseClick(mouseX, mouseY) {
         this.selected = true
         this.lastKeyPress = Date.now()
 
-        
-        let textScale = this.location.getHeightExact()/15
 
-        let textX = this.location.getXExact()-this.textXOffset.get()
+        let textScale = this.location.getHeightExact() / 15
+
+        let textX = this.location.getXExact() - this.textXOffset.get()
 
         let widthSoFar = 0
-        for(let i = 0;i<this.text.length;i++){
-            let charWidth = Renderer.getStringWidth(this.getRenderText()[i])*textScale
-            if(mouseX>textX+widthSoFar && mouseX<textX+widthSoFar+charWidth){
+        for (let i = 0; i < this.text.length; i++) {
+            let charWidth = Renderer.getStringWidth(this.getRenderText()[i]) * textScale
+            if (mouseX > textX + widthSoFar && mouseX < textX + widthSoFar + charWidth) {
                 this.cursorTextLocationId = i
             }
-            widthSoFar+=charWidth
+            widthSoFar += charWidth
         }
-        if(mouseX>textX+widthSoFar){
+        if (mouseX > textX + widthSoFar) {
             this.cursorTextLocationId = this.text.length
         }
     }
 
-    mouseClickG(mouseX, mouseY){
+    mouseClickG(mouseX, mouseY) {
         this.selected = false
     }
 
-    keyPress(key, keyId){
-        if(!this.selected) return
+    keyPress(key, keyId) {
+        if (!this.selected) return
         // console.log(keyId)
 
         let prevText = this.text
         let prevCursorLocation = this.cursorTextLocationId
 
-        switch(keyId){
+        switch (keyId) {
             case 14: //backspace
-            if(this.cursorTextLocationId>0){
-                    if(this.main.ctGui.isControlDown()){
+                if (this.cursorTextLocationId > 0) {
+                    if (this.main.ctGui.isControlDown()) {
                         let preText = this.text.substring(0, this.cursorTextLocationId)
                         let postText = this.text.substring(this.cursorTextLocationId)
 
@@ -83,13 +83,13 @@ class EditableText extends SoopyGuiElement {
 
                         preText = preText.split(" ")
                         preText.pop()
-                        if(endsSpace) preText.pop()
-                        preText = preText.join(" ") + (!(!endsSpace && preText.length !==0)?"":" ")
+                        if (endsSpace) preText.pop()
+                        preText = preText.join(" ") + (!(!endsSpace && preText.length !== 0) ? "" : " ")
 
-                        this.text = preText+postText
+                        this.text = preText + postText
                         this.cursorTextLocationId = preText.length
-                    }else{
-                        this.text = this.text.substring(0, this.cursorTextLocationId-1) + this.text.substring(this.cursorTextLocationId)
+                    } else {
+                        this.text = this.text.substring(0, this.cursorTextLocationId - 1) + this.text.substring(this.cursorTextLocationId)
                         this.cursorTextLocationId--
                     }
                 }
@@ -101,28 +101,28 @@ class EditableText extends SoopyGuiElement {
                 this.cursorTextLocationId = this.text.length
                 break
             case 211: //delete
-                if(this.cursorTextLocationId<this.text.length){
-                    this.text = this.text.substring(0, this.cursorTextLocationId) + this.text.substring(this.cursorTextLocationId+1)
+                if (this.cursorTextLocationId < this.text.length) {
+                    this.text = this.text.substring(0, this.cursorTextLocationId) + this.text.substring(this.cursorTextLocationId + 1)
                 }
                 break;
             case 203: //left
-                if(this.cursorTextLocationId>0){
-                    if(this.main.ctGui.isControlDown()){
-                        do{
+                if (this.cursorTextLocationId > 0) {
+                    if (this.main.ctGui.isControlDown()) {
+                        do {
                             this.cursorTextLocationId--
-                        }while(this.cursorTextLocationId>0 && this.text[this.cursorTextLocationId] !== " ")
-                    }else{
+                        } while (this.cursorTextLocationId > 0 && this.text[this.cursorTextLocationId] !== " ")
+                    } else {
                         this.cursorTextLocationId--
                     }
                 }
                 break
             case 205: //right
-                if(this.cursorTextLocationId<this.text.length){
-                    if(this.main.ctGui.isControlDown()){
-                        do{
+                if (this.cursorTextLocationId < this.text.length) {
+                    if (this.main.ctGui.isControlDown()) {
+                        do {
                             this.cursorTextLocationId++
-                        }while(this.cursorTextLocationId<this.text.length && this.text[this.cursorTextLocationId] !== " ")
-                    }else{
+                        } while (this.cursorTextLocationId < this.text.length && this.text[this.cursorTextLocationId] !== " ")
+                    } else {
                         this.cursorTextLocationId++
                     }
                 }
@@ -145,10 +145,10 @@ class EditableText extends SoopyGuiElement {
                 this.selected = false
                 break;
             case 47: //v (HAS TO BE B4 TYPING)
-                if(keyId===47 && this.main.ctGui.isControlDown()){
+                if (keyId === 47 && this.main.ctGui.isControlDown()) {
                     this.text = this.text.substring(0, this.cursorTextLocationId) + Java.type("net.minecraft.client.gui.GuiScreen").func_146277_j() + this.text.substring(this.cursorTextLocationId)
-                    
-                    this.cursorTextLocationId+=Java.type("net.minecraft.client.gui.GuiScreen").func_146277_j().length
+
+                    this.cursorTextLocationId += Java.type("net.minecraft.client.gui.GuiScreen").func_146277_j().length
                     break;
                 }
             default:
@@ -159,51 +159,51 @@ class EditableText extends SoopyGuiElement {
 
         this.lastKeyPress = Date.now()
 
-        this.triggerEvent(Enum.EVENT.CONTENT_CHANGE, [this.text, prevText, ()=>{
+        this.triggerEvent(Enum.EVENT.CONTENT_CHANGE, [this.text, prevText, () => {
             this.text = prevText
             this.cursorTextLocationId = prevCursorLocation
         }])
     }
 
-    render(mouseX, mouseY){
-        let textScale = this.location.getHeightExact()/15
+    render(mouseX, mouseY) {
+        let textScale = this.location.getHeightExact() / 15
 
         let textX = this.location.getXExact()
-        let textY = this.location.getYExact()+this.location.getHeightExact()/2-9*textScale/2
+        let textY = this.location.getYExact() + this.location.getHeightExact() / 2 - 9 * textScale / 2
 
-        let textWidth = Renderer.getStringWidth(this.getRenderText())*textScale
-        let textWidthLeftOfCursor = Renderer.getStringWidth(this.getRenderText().substr(0, this.cursorTextLocationId))*textScale
+        let textWidth = Renderer.getStringWidth(this.getRenderText()) * textScale
+        let textWidthLeftOfCursor = Renderer.getStringWidth(this.getRenderText().substr(0, this.cursorTextLocationId)) * textScale
 
-        if(textWidthLeftOfCursor-this.textXOffsetFast > this.location.getWidthExact()-3*textScale){ // off right of screen
-            this.textXOffsetFast = textWidthLeftOfCursor-this.location.getWidthExact()+3*textScale
+        if (textWidthLeftOfCursor - this.textXOffsetFast > this.location.getWidthExact() - 3 * textScale) { // off right of screen
+            this.textXOffsetFast = textWidthLeftOfCursor - this.location.getWidthExact() + 3 * textScale
         }
-        if(textWidthLeftOfCursor-this.textXOffsetFast < 3*textScale){ // off left of screen
-            this.textXOffsetFast = textWidthLeftOfCursor-3*textScale
+        if (textWidthLeftOfCursor - this.textXOffsetFast < 3 * textScale) { // off left of screen
+            this.textXOffsetFast = textWidthLeftOfCursor - 3 * textScale
         }
-        if(this.textXOffsetFast+this.location.getWidthExact()-3*textScale > textWidth){
-            this.textXOffsetFast = textWidthLeftOfCursor-this.location.getWidthExact()+3*textScale
+        if (this.textXOffsetFast + this.location.getWidthExact() - 3 * textScale > textWidth) {
+            this.textXOffsetFast = textWidthLeftOfCursor - this.location.getWidthExact() + 3 * textScale
         }
-        this.textXOffsetFast = Math.max(-3*textScale, this.textXOffsetFast)
+        this.textXOffsetFast = Math.max(-3 * textScale, this.textXOffsetFast)
         this.textXOffset.set(this.textXOffsetFast, 100)
-        
-        this.cursorLoc.x.set(textWidthLeftOfCursor-this.textXOffsetFast, 100)
 
-        if(!this.selected && this.text === ""){
-            textScale = Math.min(textScale, this.location.getWidthExact()/Renderer.getStringWidth(this.placeholder + "  "))
-            let textY = this.location.getYExact()+this.location.getHeightExact()/2-9*textScale/2
-            renderLibs.drawString("§7"+this.placeholder, textX+3*textScale, textY, textScale)
-        }else{
-            renderLibs.drawString("§0"+this.getRenderText(), textX-this.textXOffset.get(), textY, textScale)
+        this.cursorLoc.x.set(textWidthLeftOfCursor - this.textXOffsetFast, 100)
+
+        if (!this.selected && this.text === "") {
+            textScale = Math.min(textScale, this.location.getWidthExact() / Renderer.getStringWidth(this.placeholder + "  "))
+            let textY = this.location.getYExact() + this.location.getHeightExact() / 2 - 9 * textScale / 2
+            renderLibs.drawString((this.isDarkThemeEnabled() ? renderLibs.darkThemifyText("§7") : "§7") + this.placeholder, textX + 3 * textScale, textY, textScale)
+        } else {
+            renderLibs.drawString((this.isDarkThemeEnabled() ? renderLibs.darkThemifyText("§0") : "§0") + this.getRenderText(), textX - this.textXOffset.get(), textY, textScale)
         }
 
-        if(!this.selected) return
+        if (!this.selected) return
 
-        if(Math.floor((Date.now()-this.lastKeyPress)/1000)%2===0){
-            Renderer.drawRect(Renderer.color(0, 0, 0), textX+this.cursorLoc.x.get(), textY+this.cursorLoc.y.get()-1*textScale, 1, 10*textScale)
+        if (Math.floor((Date.now() - this.lastKeyPress) / 1000) % 2 === 0) {
+            Renderer.drawRect(this.isDarkThemeEnabled() ? Renderer.color(200, 200, 200) : Renderer.color(0, 0, 0), textX + this.cursorLoc.x.get(), textY + this.cursorLoc.y.get() - 1 * textScale, 1, 10 * textScale)
         }
     }
 
-    getRenderText(){
+    getRenderText() {
         return this.text
     }
 }

@@ -13,6 +13,7 @@ let Enum = {
         "RENDER":enumID++,
         "RENDER_UPDATE":enumID++,
         "MOUSE_CLICK": enumID++,
+        "MOUSE_RELEASE": enumID++,
         "MOUSE_CLICK_GLOBAL": enumID++,
         "KEY_PRESS": enumID++,
         "MOUSE_SCROLL": enumID++,

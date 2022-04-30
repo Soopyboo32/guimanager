@@ -75,6 +75,9 @@ class SoopyImageElement extends SoopyGuiElement{
 
     onImageHeightChange(func, obj){
         this.onImageHeightChangeFunc = [func, obj]
+        if(this.image !== undefined && this.image !== null && this.image !== "LOADING"){
+            this.onImageHeightChangeFunc[0].call(this.onImageHeightChangeFunc[1])
+        }
         
         return this
     }

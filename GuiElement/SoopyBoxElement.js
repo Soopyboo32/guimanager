@@ -11,27 +11,31 @@ import RenderLib from "../renderLibs"
  * A box.
  * @class
  */
-class SoopyBoxElement extends SoopyGuiElement{
+class SoopyBoxElement extends SoopyGuiElement {
     /**
      * Creates a {@link SoopyBoxElement}
      * @constructor
      */
-    constructor(){
+    constructor() {
 
         super()
 
-        this.color = [new SoopyNumber(253), new SoopyNumber(255), new SoopyNumber(227)]
+        this.color = [new SoopyNumber(0), new SoopyNumber(0), new SoopyNumber(0)]
         this.colorOffset = [new SoopyNumber(0), new SoopyNumber(0), new SoopyNumber(0)]
+        this.setColor(253, 255, 227)
 
         let renderEvent = new SoopyRenderEvent()
 
         this.actuallyDrawBox = true
 
-        renderEvent.setHandler((mouseX, mouseY, partialTicks)=>{
-            if(this.actuallyDrawBox){
-                let theColor = [this.color[0].get()+this.colorOffset[0].get(), this.color[1].get()+this.colorOffset[1].get(), this.color[2].get()+this.colorOffset[2].get()]
+        renderEvent.setHandler((mouseX, mouseY, partialTicks) => {
+            if (this.actuallyDrawBox) {
+                let theColor = [this.color[0].get() + this.colorOffset[0].get(), this.color[1].get() + this.colorOffset[1].get(), this.color[2].get() + this.colorOffset[2].get()]
+                if (this.isDarkThemeEnabled()) {
+                    theColor = theColor.map(a => 255 - a * 0.9)
+                }
 
-                RenderLib.drawBox(theColor,this.location.getXExact(),this.location.getYExact(),this.location.getWidthExact(),this.location.getHeightExact(),3)
+                RenderLib.drawBox(theColor, this.location.getXExact(), this.location.getYExact(), this.location.getWidthExact(), this.location.getHeightExact(), 3)
             }
         })
 
@@ -48,7 +52,7 @@ class SoopyBoxElement extends SoopyGuiElement{
         this.setInnerObject(this.innerObject)
     }
 
-    renderBox(enabled){
+    renderBox(enabled) {
         this.actuallyDrawBox = enabled
         return this
     }
@@ -57,7 +61,7 @@ class SoopyBoxElement extends SoopyGuiElement{
      * Set wether is it possible to scroll
      * @param {Boolean} possible
      */
-    setScrollable(possible){
+    setScrollable(possible) {
         this.innerObject.scrollable = possible
         return this;
     }
@@ -70,7 +74,7 @@ class SoopyBoxElement extends SoopyGuiElement{
      * @param {Number} anim The animation time in ms for this change
      * @returns {SoopyBoxElement} this for method chaining
      */
-    setColor(r, g, b, anim){
+    setColor(r, g, b, anim) {
         this.color[0].set(r, anim)
         this.color[1].set(g, anim)
         this.color[2].set(b, anim)
@@ -88,7 +92,7 @@ class SoopyBoxElement extends SoopyGuiElement{
      * @param {Number} anim The animation time in ms for this change
      * @returns {SoopyBoxElement} this for method chaining
      */
-    setColorOffset(r, g, b, anim){
+    setColorOffset(r, g, b, anim) {
         this.colorOffset[0].set(r, anim)
         this.colorOffset[1].set(g, anim)
         this.colorOffset[2].set(b, anim)

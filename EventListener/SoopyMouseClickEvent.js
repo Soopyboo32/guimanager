@@ -5,7 +5,6 @@ import Enums from "../Enum"
 import SoopyEventListener from "../EventListener/SoopyEventListener"
 
 /**
- * The render background event, this will run whenever the background of the gui / gui element is rendered
  * @class
  * @extends SoopyMouseClickEvent
  */
