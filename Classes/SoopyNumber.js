@@ -30,7 +30,7 @@ class SoopyNumber {
      * Allows setting the animation easing mode
      * @param {String} mode The animation mode
      */
-    setAnimMode(mode){
+    setAnimMode(mode) {
         this.animMode = mode
         return this
     }
@@ -39,13 +39,13 @@ class SoopyNumber {
      * @arg {Number} number The new number
      * @returns {SoopyNumber} for method chaining
      */
-    set(number, animationTime=0){
-        if(this.number === number) return;
+    set(number, animationTime = 0) {
+        if (this.number === number) return;
 
         this.lastNumber = this.get()
         this.lastNumberUpdate = Date.now()
         this.currAnimTime = animationTime
-  
+
         this.number = number
         return this
     }
@@ -54,21 +54,21 @@ class SoopyNumber {
      * Returns the number
      * @returns {Number} The number
      */
-    get(){
-        if(this.currAnimTime===0) return this.number
-        if(this.lastNumberUpdate+this.currAnimTime < Date.now()){
+    get() {
+        if (this.currAnimTime === 0) return this.number
+        if (this.lastNumberUpdate + this.currAnimTime < Date.now()) {
             this.currAnimTime = 0
             return this.number
         }
 
-        switch(this.animMode){
-            case "sin":return this.lastNumber+((1-((Math.cos(Math.PI*(Date.now()-this.lastNumberUpdate)/this.currAnimTime)+1)/2))*(this.number-this.lastNumber))
-            case "sin_out":return this.lastNumber+((((Math.sin(0.5*Math.PI*(Date.now()-this.lastNumberUpdate)/this.currAnimTime))))*(this.number-this.lastNumber))
+        switch (this.animMode) {
+            case "sin": return this.lastNumber + ((1 - ((Math.cos(Math.PI * (Date.now() - this.lastNumberUpdate) / this.currAnimTime) + 1) / 2)) * (this.number - this.lastNumber))
+            case "sin_out": return this.lastNumber + ((((Math.sin(0.5 * Math.PI * (Date.now() - this.lastNumberUpdate) / this.currAnimTime)))) * (this.number - this.lastNumber))
         }
     }
 
-    isAnimating(){
-        return !(this.currAnimTime===0 || this.lastNumberUpdate+this.currAnimTime < Date.now())
+    isAnimating() {
+        return !(this.currAnimTime === 0 || this.lastNumberUpdate + this.currAnimTime < Date.now())
     }
 }
 

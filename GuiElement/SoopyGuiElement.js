@@ -435,6 +435,7 @@ class SoopyGuiElement {
     clearChildren() {
         let theParent = this.innerObjectPaddingThing || this
         theParent.children.forEach(child => {
+            if (!child) return
             child.setParent(undefined)
         });
         theParent.children = []

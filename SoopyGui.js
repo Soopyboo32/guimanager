@@ -123,7 +123,7 @@ class SoopyGui {
         /**
          * When True this will only update the location of elements second instead of tick/frame
          * Will basicly delete animations
-         * only use if your gui has no motion
+         * only use if the gui has no motion
          */
         this.slowLocations = false
 
@@ -408,7 +408,8 @@ function openCommandConsole(gui) {
         let commands = Object.keys(commandConsoleCommands).filter(a => a.toLowerCase().startsWith(newVal))
         let selectedCommand = commands[0] || ""
         let restOfText = selectedCommand.substr(newVal.length)
-        commandTextBox.text.text = newVal + "§7" + restOfText
+        commandTextBox.text.text = newVal
+        commandTextBox.text.setSuffix("§7" + restOfText)
     }))
     commandTextBox.text.addEvent(new SoopyGlobalMouseClickEvent().setHandler(() => {
         if (!commandTextBox.text.selected) {
@@ -420,11 +421,13 @@ function openCommandConsole(gui) {
     }))
     commandTextBox.text.addEvent(new SoopyKeyPressEvent().setHandler((key, keyId) => {
         if (commandTextBox.text.selected) {
-            let text = commandTextBox.text.text.split("§7")[0]
-            if (commandTextBox.text.cursorTextLocationId > text.length) commandTextBox.text.cursorTextLocationId = text.length
+            let text = commandTextBox.text.text
+            // if (commandTextBox.text.cursorTextLocationId > text.length) commandTextBox.text.cursorTextLocationId = text.length
             // console.log(keyId)
             if (keyId === 15) {//tab
-                commandTextBox.setText(commandTextBox.text.text.split("§7").join(""))
+                commandTextBox.setText(commandTextBox.text.text + ChatLib.removeFormatting(commandTextBox.text.suffix))
+
+                commandTextBox.text.setSuffix("")
             }
             if (keyId === 28) { //pressed enter, run command
                 let command = text

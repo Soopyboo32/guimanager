@@ -61,7 +61,7 @@ class SoopyImageElement extends SoopyGuiElement {
     }
 
     loadHeightFromImage() {
-        if (this.image !== undefined && this.image !== null && this.image !== "LOADING") {
+        if (this.image && this.image !== "LOADING") {
             this.location.size.y.set(this.location.getWidthExact() * this.image.getTextureHeight() / this.image.getTextureWidth() / this.location.referanceFrame.getHeightExact())
             if (this.onImageHeightChangeFunc) {
                 this.onImageHeightChangeFunc[0].call(this.onImageHeightChangeFunc[1])

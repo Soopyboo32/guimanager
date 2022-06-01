@@ -13,6 +13,8 @@ class EditableText extends SoopyGuiElement {
         super()
 
         this.text = ""
+        this.prefix = ""
+        this.suffix = ""
         this.placeholder = "Click to type"
         this.textXOffset = new SoopyNumber(0).setAnimMode("sin_out")
         this.textXOffsetFast = 0
@@ -33,6 +35,17 @@ class EditableText extends SoopyGuiElement {
     setText(text) {
         this.text = text
         this.cursorTextLocationId = text.length
+        return this
+    }
+
+    setPrefix(text) {
+        this.prefix = text
+        return this
+    }
+
+    setSuffix(text) {
+        this.suffix = text
+        return this
     }
 
     getText() {
@@ -204,7 +217,7 @@ class EditableText extends SoopyGuiElement {
     }
 
     getRenderText() {
-        return this.text
+        return this.prefix + this.text + this.suffix
     }
 }
 

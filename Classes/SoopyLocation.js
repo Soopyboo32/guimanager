@@ -20,7 +20,7 @@ class SoopyLocation {
          * @type {SoopyPosition}
          */
         this.location = location
-    
+
         /**
          * The width and height
          * @type {SoopyPosition}
@@ -43,10 +43,10 @@ class SoopyLocation {
      * Gets the width, taking into account the referanceframe
      * @returns {Number} the width
      */
-    getWidthExact(){
-        if(this.shouldCache && this.widthCache !== undefined) return this.widthCache
+    getWidthExact() {
+        if (this.shouldCache && this.widthCache !== undefined) return this.widthCache
         let ref = undefined
-        if(this.referanceFrame){
+        if (this.referanceFrame) {
             ref = [0, this.referanceFrame.getWidthExact()]
         }
         this.widthCache = this.size.getXAsExact(ref, false)
@@ -56,10 +56,10 @@ class SoopyLocation {
      * Gets the height, taking into account the referanceframe
      * @returns {Number} the height
      */
-    getHeightExact(){
-        if(this.shouldCache && this.heightCache !== undefined) return this.heightCache
+    getHeightExact() {
+        if (this.shouldCache && this.heightCache !== undefined) return this.heightCache
         let ref = undefined
-        if(this.referanceFrame){
+        if (this.referanceFrame) {
             ref = [0, this.referanceFrame.getHeightExact()]
         }
         this.heightCache = this.size.getYAsExact(ref, false)
@@ -69,12 +69,12 @@ class SoopyLocation {
      * gets the x, taking into account the referanceframe
      * @returns {Number} the x
      */
-    getXExact(){
-        if(this.shouldCache && this.xCache !== undefined) return this.xCache
+    getXExact() {
+        if (this.shouldCache && this.xCache !== undefined) return this.xCache
         let ref = undefined
-        if(this.referanceFrame){
+        if (this.referanceFrame) {
             ref = [this.referanceFrame.getXExact()]
-            ref[1] = ref[0]+this.referanceFrame.getWidthExact()
+            ref[1] = ref[0] + this.referanceFrame.getWidthExact()
         }
         this.xCache = this.location.getXAsExact(ref, true)
         return this.xCache
@@ -83,12 +83,12 @@ class SoopyLocation {
      * gets the y, taking into account the referanceframe
      * @returns {Number} the y
      */
-    getYExact(){
-        if(this.shouldCache && this.yCache !== undefined) return this.yCache
+    getYExact() {
+        if (this.shouldCache && this.yCache !== undefined) return this.yCache
         let ref = undefined
-        if(this.referanceFrame){
-            ref = [this.referanceFrame.getYExact()+this.referanceFrame.scroll.getYAsExact(undefined, false)]
-            ref[1] = ref[0]+this.referanceFrame.getHeightExact()
+        if (this.referanceFrame) {
+            ref = [this.referanceFrame.getYExact() + this.referanceFrame.scroll.getYAsExact(undefined, false)]
+            ref[1] = ref[0] + this.referanceFrame.getHeightExact()
         }
         this.yCache = this.location.getYAsExact(ref, true)
         return this.yCache
@@ -97,7 +97,7 @@ class SoopyLocation {
     /**
      * Clears the location cache, should be run every frame
      */
-    clearCache(){
+    clearCache() {
         this.widthCache = undefined
         this.heightCache = undefined
         this.xCache = undefined
@@ -109,7 +109,7 @@ class SoopyLocation {
      * enables caching
      * @returns {SoopyLocation} this for method chaining
      */
-    enableCache(){
+    enableCache() {
         this.shouldCache = true
         return this
     }
@@ -118,7 +118,7 @@ class SoopyLocation {
      * disables caching
      * @returns {SoopyLocation} this for method chaining
      */
-    disableCache(){
+    disableCache() {
         this.shouldCache = false
         return this
     }

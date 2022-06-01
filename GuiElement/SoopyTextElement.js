@@ -87,7 +87,7 @@ class SoopyTextElement extends SoopyGuiElement {
 
                     this.imagew = maxWidth * scale * Renderer.screen.getScale()
                     this.imageh = (textLines.length) * 10 * scale * Renderer.screen.getScale()
-                    console.log(this.text, this.imagew, this.imageh)
+                    // console.log(this.text, this.imagew, this.imageh)
                     if (!this.image) this.image = new Framebuffer(this.imagew, this.imageh, false)
                     if (this.image.field_147621_c !== this.imagew || this.image.field_147618_d !== this.imageh) this.image.func_147613_a(this.imagew, this.imageh)
                     this.image.func_147610_a(true) //bindFramebuffer

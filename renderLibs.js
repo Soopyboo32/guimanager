@@ -18,7 +18,7 @@ let Tessellator = Java.type("net.minecraft.client.renderer.Tessellator").func_17
 let WorldRenderer = Tessellator.func_178180_c()
 
 function getImageFromCache(url, waitForLoad = false, noDownload) {
-    let urlId = url.replace(/[^A-z]/g, "")
+    let urlId = url.replace(/[^A-z0-9]/g, "")
 
     if (noDownload) return imagesCache[urlId]
 

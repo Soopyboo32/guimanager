@@ -2,33 +2,43 @@ import SoopyBoxElement from "./SoopyBoxElement";
 import EditableText from "./EditableText";
 
 class TextBox extends SoopyBoxElement {
-    constructor(){
+    constructor() {
         super()
 
         this.text = new EditableText().setLocation(0, 0, 1, 1)
         this.addChild(this.text)
     }
 
-    setText(text){
+    setText(text) {
         this.text.setText(text)
         return this
     }
 
-    getText(){
+    getText() {
         return this.text.getText()
     }
 
-    setPlaceholder(placeholder){
+    setPrefix(text) {
+        this.text.setPrefix(text)
+        return this
+    }
+
+    setSuffix(text) {
+        this.text.setSuffix(text)
+        return this
+    }
+
+    setPlaceholder(placeholder) {
         this.text.placeholder = placeholder
         return this;
     }
 
-    select(){
+    select() {
         this.text.selected = true
         return this
     }
 
-    deselect(){
+    deselect() {
         this.text.selected = false
         return this
     }
