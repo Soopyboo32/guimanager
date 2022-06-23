@@ -1,5 +1,4 @@
 import SoopyHoverChangeEvent from "../EventListener/SoopyHoverChangeEvent";
-import SoopyRenderEvent from "../EventListener/SoopyRenderEvent";
 
 const { default: SoopyBoxElement } = require("./SoopyBoxElement");
 const { default: SoopyTextElement } = require("./SoopyTextElement");

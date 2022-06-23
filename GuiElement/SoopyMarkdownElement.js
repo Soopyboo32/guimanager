@@ -58,7 +58,7 @@ class SoopyMarkdownElement extends SoopyGuiElement {
      * DONT USE OFTEN AS THIS WILL RENDER THE TEXT = POTENTIAL LAG
      */
     getHeight() {
-        let { height, imageClickData } = renderLibs.renderTextBlockWithMarkup(this.text, 0, 0, this.location.getWidthExact(), false)
+        let { height } = renderLibs.renderTextBlockWithMarkup(this.text, 0, 0, this.location.getWidthExact(), false)
 
         height += 2
 
