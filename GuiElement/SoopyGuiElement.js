@@ -274,7 +274,7 @@ class SoopyGuiElement {
             //  (Renderer.screen.getHeight()-this.location.getYExact()-this.location.getHeightExact())*Renderer.screen.getScale(), 0)
         }
 
-        if (eventType !== Enum.EVENT.RENDER || usingFrameBuffer || !this.shouldUseFrameBuffer() || !this._framebuffer) {
+        if ((eventType !== Enum.EVENT.RENDER || usingFrameBuffer || !this.shouldUseFrameBuffer() || !this._framebuffer)) {
             let shouldTrigger = undefined
             for (let event of this.events) {
                 if (event.eventType === eventType) {
