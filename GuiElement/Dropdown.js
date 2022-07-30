@@ -92,7 +92,7 @@ class Dropdown extends BoxWithText {
 
         this.main.element.addChild(this.mainElement)
 
-        let x = this.location.getXExact() - 4
+        let x = this.location.getXExact()
         let y = this.location.getYExact() + this.location.getHeightExact()
         let width = this.location.getWidthExact()
         let height = (this.location.getHeightExact() + 4) * Math.min(6, Object.keys(this.options).length)
