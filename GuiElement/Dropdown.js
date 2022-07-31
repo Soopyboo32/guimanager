@@ -97,8 +97,18 @@ class Dropdown extends BoxWithText {
         let width = this.location.getWidthExact()
         let height = (this.location.getHeightExact() + 4) * Math.min(6, Object.keys(this.options).length)
 
+        let animateUp = false
+        if (y + height > Renderer.screen.getHeight()) {
+            y = this.location.getYExact() - height
+            animateUp = true
+        }
+
         this.mainElement.setLocation(x / Renderer.screen.getWidth(), y / Renderer.screen.getHeight(), width / Renderer.screen.getWidth(), 1)
         this.mainElement.location.size.y.set(height, 250)
+        if (animateUp) {
+            this.mainElement.location.location.y.set((y + height) / Renderer.screen.getHeight(), 0)
+            this.mainElement.location.location.y.set(y / Renderer.screen.getHeight(), 250)
+        }
 
         this.itemsElement.location.size.y.set((this.location.getHeightExact() + 4) * Math.min(5, Object.keys(this.options).length), 0)
 
