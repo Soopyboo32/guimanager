@@ -101,7 +101,6 @@ class RenderLibs {
     drawString = function (text, x, y, scale) {
         Renderer.scale(scale, scale)
         Renderer.drawString(text || "undefined", x / scale, y / scale)
-        Renderer.scale(1, 1)
     }
 
     /**
@@ -114,7 +113,6 @@ class RenderLibs {
     drawStringShadow = function (text, x, y, scale) {
         Renderer.scale(scale, scale)
         Renderer.drawStringWithShadow(text || "undefined", x / scale, y / scale)
-        Renderer.scale(1, 1)
     }
     /**
      * Draws a string at a location with a scale (rendering from top middle)
