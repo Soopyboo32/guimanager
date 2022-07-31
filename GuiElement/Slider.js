@@ -51,7 +51,12 @@ class Slider extends SoopyGuiElement {
             let w = this.location.getWidthExact() - h
 
             if (this.tempSlidingThingX !== null) {
-                this.sliderProgress.set(MathLib.clampFloat(MathLib.map(mx - this.tempSlidingThingX, x, x + w, this.sliderMin.get(), this.sliderMax.get()), this.sliderMin.get(), this.sliderMax.get()), 0)
+                this.value = MathLib.clampFloat(MathLib.map(mx - this.tempSlidingThingX, x, x + w, this.sliderMin.get(), this.sliderMax.get()), this.sliderMin.get(), this.sliderMax.get())
+                this.sliderProgress.set(this.value, 0)
+
+                this.triggerEvent(Enum.EVENT.CONTENT_CHANGE, [this.value, oldValue, () => {
+                    this.setValue(oldValue, 0)
+                }])
             }
 
             let boxX = MathLib.map(this.sliderProgress.get(), this.sliderMin.get(), this.sliderMax.get(), x, x + w)
@@ -89,7 +94,8 @@ class Slider extends SoopyGuiElement {
             let x = this.location.getXExact() + h / 2
             let w = this.location.getWidthExact() - h
 
-            this.sliderProgress.set(MathLib.clampFloat(MathLib.map(mx - this.tempSlidingThingX, x, x + w, this.sliderMin.get(), this.sliderMax.get()), this.sliderMin.get(), this.sliderMax.get()), 0)
+            this.value = MathLib.clampFloat(MathLib.map(mx - this.tempSlidingThingX, x, x + w, this.sliderMin.get(), this.sliderMax.get()), this.sliderMin.get(), this.sliderMax.get())
+            this.sliderProgress.set(this.value, 0)
 
             this.tempSlidingThingX = null
 
