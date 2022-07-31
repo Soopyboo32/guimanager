@@ -51,6 +51,7 @@ class Slider extends SoopyGuiElement {
             let w = this.location.getWidthExact() - h
 
             if (this.tempSlidingThingX !== null) {
+                let oldValue = this.value
                 this.value = MathLib.clampFloat(MathLib.map(mx - this.tempSlidingThingX, x, x + w, this.sliderMin.get(), this.sliderMax.get()), this.sliderMin.get(), this.sliderMax.get())
                 this.sliderProgress.set(this.value, 0)
 
@@ -93,6 +94,8 @@ class Slider extends SoopyGuiElement {
             let h = this.location.getHeightExact() / 5
             let x = this.location.getXExact() + h / 2
             let w = this.location.getWidthExact() - h
+
+            let oldValue = this.value
 
             this.value = MathLib.clampFloat(MathLib.map(mx - this.tempSlidingThingX, x, x + w, this.sliderMin.get(), this.sliderMax.get()), this.sliderMin.get(), this.sliderMax.get())
             this.sliderProgress.set(this.value, 0)
