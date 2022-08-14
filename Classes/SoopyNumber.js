@@ -28,7 +28,7 @@ class SoopyNumber {
 
     /**
      * Allows setting the animation easing mode
-     * @param {String} mode The animation mode
+     * @param {"sin"|"sin_out"|"linea"} mode The animation mode
      */
     setAnimMode(mode) {
         this.animMode = mode
@@ -64,6 +64,7 @@ class SoopyNumber {
         switch (this.animMode) {
             case "sin": return this.lastNumber + ((1 - ((Math.cos(Math.PI * (Date.now() - this.lastNumberUpdate) / this.currAnimTime) + 1) / 2)) * (this.number - this.lastNumber))
             case "sin_out": return this.lastNumber + ((((Math.sin(0.5 * Math.PI * (Date.now() - this.lastNumberUpdate) / this.currAnimTime)))) * (this.number - this.lastNumber))
+            case "linea": return this.lastNumber + ((Date.now() - this.lastNumberUpdate) / this.currAnimTime) * (this.number - this.lastNumber)
         }
     }
 
