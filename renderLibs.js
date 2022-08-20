@@ -357,7 +357,7 @@ class RenderLibs {
         let isCodeBlock = false
         let codeblockType = undefined
         let imageClickData = []
-        textArr.split("\n").forEach((line) => {
+        textArr.split(/\r?\n/g).forEach((line) => {
             if (line.startsWith("# ")) {
                 yOff += this._renderSmallTextWithMarkup(line.substr(2), x, y + yOff, 2, width, actuallyRender)
                 return;

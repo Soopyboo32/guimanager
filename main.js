@@ -17,6 +17,7 @@ import SoopyImageElement from './GuiElement/SoopyImageElement';
 import SoopyGui from "./SoopyGui";
 import SoopyOpenGuiEvent from "./EventListener/SoopyOpenGuiEvent"
 import Slider from "./GuiElement/Slider";
+import ColorPicker from "./GuiElement/ColorPicker";
 
 let testGui = new SoopyGui();
 
@@ -51,6 +52,10 @@ let textBox4 = new NumberTextBox().setLocation(0.1, y, 0.8, 0.2)
 textBox4.text.placeholder = "Number input2"
 box.addChild(textBox4)
 y += 0.2
+let colorPicker = new ColorPicker().setLocation(0.1, y, 0.2, 0.2)
+y += 0.2
+
+box.addChild(colorPicker)
 
 let toggle = new Toggle().setLocation(0.1, y, 0.8, 0.2)
 y += 0.2
