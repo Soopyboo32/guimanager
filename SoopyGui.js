@@ -473,10 +473,11 @@ let commandConsoleCommands = {
      */
     "logguisetup": (gui) => {
         function logElement(element, tabs = "  ") {
-            console.log(tabs + element.constructor.name)
+            console.log(tabs + element.constructor.name + " {")
             element.children.forEach(child => {
                 logElement(child, tabs + "  ")
             })
+            console.log(tabs + "}")
         }
         logElement(gui.element)
     },
