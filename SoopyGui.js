@@ -47,18 +47,6 @@ class SoopyGui {
          */
         this.element = new SoopyGuiElement().setMain(this)
         /**
-         * The name of the command to open the gui
-         * 
-         * This will end up with running "/{command}" ingame to open the gui
-         * @type {String}
-         */
-        this.openCommand = undefined
-        /**
-         * Wether the gui is currently open
-         * @type {Boolean}
-         */
-        this.isOpen = false
-        /**
          * The last opened time of the gui
          * 
          * This is in the type of EPOCH milliseconds
@@ -157,6 +145,13 @@ class SoopyGui {
     isDarkThemeEnabled() {
         return this.darkThemeEnabled
     }
+    /**
+     * Wether the gui is currently open
+     * @type {Boolean}
+     */
+    get isOpen() {
+        return this.ctGui.isOpen()
+    }
 
     /**
      * Set a command that will open the gui when ran
@@ -177,7 +172,6 @@ class SoopyGui {
      */
     open() {
         this.ctGui.open()
-        this.isOpen = true
         this.lastOpenedTime = Date.now()
 
         this.element.triggerEvent(Enums.EVENT.OPEN_GUI)
@@ -192,7 +186,6 @@ class SoopyGui {
     close() {
         if (this.isOpen) {
             Client.currentGui.close()
-            this.isOpen = false
         }
 
         return this
