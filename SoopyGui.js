@@ -472,11 +472,12 @@ let commandConsoleCommands = {
      * @param {SoopyGui} gui 
      */
     "logguisetup": (gui) => {
-        function logElement(element, tabs = "  ") {
+        function logElement(element, tabs = "") {
             console.log(tabs + element.constructor.name + " {")
             element.children.forEach(child => {
                 logElement(child, tabs + "  ")
             })
+            if (element.children.length === 0) console.log(tabs + "  ")
             console.log(tabs + "}")
         }
         logElement(gui.element)
