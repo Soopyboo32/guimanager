@@ -22,7 +22,6 @@ if (!global.guiManagerSoopyGuisList) {
             })
         }
     }
-
 }
 
 /**
@@ -212,6 +211,8 @@ class SoopyGui {
         this.eventsList.forEach(event => {
             event.unregister()
         })
+
+        global.guiManagerSoopyGuisList.splice(global.guiManagerSoopyGuisList.indexOf(this), 1)
 
         return this
     }
@@ -474,10 +475,14 @@ let commandConsoleCommands = {
     "logguisetup": (gui) => {
         function logElement(element, tabs = "") {
             console.log(tabs + element.constructor.name + " {")
+            if (element.text && typeof element.text === "string") {
+                console.log(tabs + "  " + "\"text\": " + JSON.stringify(element.text))
+            } else {
+                if (element.children.length === 0) console.log(tabs + "  ")
+            }
             element.children.forEach(child => {
                 logElement(child, tabs + "  ")
             })
-            if (element.children.length === 0) console.log(tabs + "  ")
             console.log(tabs + "}")
         }
         logElement(gui.element)
