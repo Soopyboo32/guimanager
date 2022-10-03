@@ -185,7 +185,7 @@ class RenderLibs {
     }
     /**
      * Returns the current scizzor location
-     * @return {Array.<Number>} the current scizzor location [x,y]
+     * @return {[Number, Number, Number, Number]} the current scizzor location [x,y,w,h]
      */
     getCurrScizzor = function () {
         return [this.lastSizzorX, this.lastSizzorY, this.lastSizzorW, this.lastSizzorH]
@@ -677,6 +677,8 @@ let darkThemeTextReplacements = {
     "8": "7"
 }
 
-let renderLibs = new RenderLibs()
+if (!global.soopyRenderLibsThingo) {
+    global.soopyRenderLibsThingo = new RenderLibs()
+}
 
-export default renderLibs;
+export default global.soopyRenderLibsThingo;
