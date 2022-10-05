@@ -229,7 +229,7 @@ class RenderLibs {
         if (this.sizzorOverride.disabled) return
         if (this.scizzoring) {
             if (this.lastSizzorW === 0 || this.lastSizzorH === 0) return;
-            let intersect = renderLibs.getIntersectingRectangle({ x1: this.lastSizzorX, y1: this.lastSizzorY, x2: this.lastSizzorX + this.lastSizzorW, y2: this.lastSizzorY + this.lastSizzorH }, { x1: x, y1: y, x2: x + width, y2: y + height })
+            let intersect = global.soopyRenderLibsThingo.getIntersectingRectangle({ x1: this.lastSizzorX, y1: this.lastSizzorY, x2: this.lastSizzorX + this.lastSizzorW, y2: this.lastSizzorY + this.lastSizzorH }, { x1: x, y1: y, x2: x + width, y2: y + height })
             if (intersect === false) {
                 this.lastSizzorW = 0
                 this.lastSizzorH = 0
