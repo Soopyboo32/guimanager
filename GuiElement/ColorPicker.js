@@ -10,6 +10,7 @@ import Slider from "./Slider"
 import SoopyContentChangeEvent from "../EventListener/SoopyContentChangeEvent";
 import SoopyMouseReleaseEvent from "../EventListener/SoopyMouseReleaseEvent";
 import TextBox from "./TextBox";
+import Enum from "../Enum";
 const BufferedImage = Java.type("java.awt.image.BufferedImage")
 const Color = Java.type("java.awt.Color")
 
