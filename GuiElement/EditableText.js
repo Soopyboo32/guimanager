@@ -63,7 +63,7 @@ class EditableText extends SoopyGuiElement {
 
         let widthSoFar = 0
         for (let i = 0; i < this.text.length; i++) {
-            let charWidth = Renderer.getStringWidth(this.getRenderText()[i]) * textScale
+            let charWidth = Renderer.getStringWidth(ChatLib.removeFormatting(this.getRenderText())[i]) * textScale
             if (mouseX > textX + widthSoFar && mouseX < textX + widthSoFar + charWidth) {
                 this.cursorTextLocationId = i
             }
@@ -185,7 +185,7 @@ class EditableText extends SoopyGuiElement {
         let textY = this.location.getYExact() + this.location.getHeightExact() / 2 - 9 * textScale / 2
 
         let textWidth = Renderer.getStringWidth(this.getRenderText()) * textScale
-        let textWidthLeftOfCursor = Renderer.getStringWidth(this.getRenderText().substr(0, this.cursorTextLocationId)) * textScale
+        let textWidthLeftOfCursor = Renderer.getStringWidth(this.getRenderText().substr(0, this.cursorTextLocationId + this.prefix.length)) * textScale
 
         if (textWidthLeftOfCursor - this.textXOffsetFast > this.location.getWidthExact() - 3 * textScale) { // off right of screen
             this.textXOffsetFast = textWidthLeftOfCursor - this.location.getWidthExact() + 3 * textScale

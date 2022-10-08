@@ -4,6 +4,14 @@ import SoopyMouseClickEvent from "../EventListener/SoopyMouseClickEvent";
 import SoopyBoxElement from "./SoopyBoxElement";
 import SoopyRenderUpdateEvent from "../EventListener/SoopyRenderUpdateEvent";
 import SoopyOpenGuiEvent from "../EventListener/SoopyOpenGuiEvent";
+import SoopyGuiElement from "./SoopyGuiElement";
+import renderLibs from "../renderLibs";
+import Slider from "./Slider"
+import SoopyContentChangeEvent from "../EventListener/SoopyContentChangeEvent";
+import SoopyMouseReleaseEvent from "../EventListener/SoopyMouseReleaseEvent";
+import TextBox from "./TextBox";
+const BufferedImage = Java.type("java.awt.image.BufferedImage")
+const Color = Java.type("java.awt.Color")
 
 class ColorPicker extends SoopyBoxElement {
     constructor() {
@@ -44,7 +52,110 @@ class ColorPicker extends SoopyBoxElement {
             this.close()
         }))
 
+        let mainRenderElement = new SoopyGuiElement().setLocation(0, 0, 1, 0.6)
+        this.mainElement.addChild(mainRenderElement)
+
+        this.colorImg = new Image(new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB))
+        this.colorImgNeedsRender = 0
+        let mouseDown = false
+        let renderingNewImg = 0
+
+        mainRenderElement.addEvent(new SoopyRenderEvent().setHandler((mx, my) => {
+            this.colorImg.draw(mainRenderElement.location.getXExact(), mainRenderElement.location.getYExact(), mainRenderElement.location.getWidthExact(), mainRenderElement.location.getHeightExact())
+
+            if (renderingNewImg === 2) {
+                this.colorImg.destroy()
+                this.colorImg = new Image(this.buffI)
+                renderingNewImg = 0
+            }
+            if (this.colorImgNeedsRender && !renderingNewImg) {
+                this.colorImgNeedsRender = false
+                renderingNewImg = 1
+                new Thread(() => {
+                    this.renderColorImage()
+                    renderingNewImg = 2
+                }).start()
+            }
+            if (mouseDown) {
+                let h = MathLib.clampFloat((mx - mainRenderElement.location.getXExact()) / mainRenderElement.location.getWidthExact(), 0, 1)
+                let l = MathLib.clampFloat((my - mainRenderElement.location.getYExact()) / mainRenderElement.location.getHeightExact(), 0, 1)
+                let s = this.saturationSlider.value
+
+                this.selectedColor = hslToRgb(h, s, l)
+
+                this.hexBox.setText(rgbToHex(...this.selectedColor))
+            }
+
+            let [h, s, l] = rgbToHsl(...this.selectedColor)
+            let x = h * mainRenderElement.location.getWidthExact() + mainRenderElement.location.getXExact()
+            let y = l * mainRenderElement.location.getHeightExact() + mainRenderElement.location.getYExact()
+
+            Renderer.drawCircle(Renderer.color(255 - this.selectedColor[0], 255 - this.selectedColor[1], 255 - this.selectedColor[2]), x, y, 10, 20)
+            Renderer.drawCircle(Renderer.color(...this.selectedColor), x, y, 7, 20)
+        }))
+        mainRenderElement.addEvent(new SoopyMouseClickEvent().setHandler((x, y) => {
+            if (x < mainRenderElement.location.getXExact()) return
+            if (x > mainRenderElement.location.getXExact() + mainRenderElement.location.getXExact()) return
+            if (y < mainRenderElement.location.getYExact()) return
+            if (y > mainRenderElement.location.getYExact() + mainRenderElement.location.getYExact()) return
+
+            mouseDown = true
+        }))
+        mainRenderElement.addEvent(new SoopyMouseReleaseEvent().setHandler((x, y) => {
+            if (!mouseDown) return
+
+            let h = MathLib.clampFloat((x - mainRenderElement.location.getXExact()) / mainRenderElement.location.getWidthExact(), 0, 1)
+            let l = MathLib.clampFloat((y - mainRenderElement.location.getYExact()) / mainRenderElement.location.getHeightExact(), 0, 1)
+            let s = this.saturationSlider.value
+
+            this.selectedColor = hslToRgb(h, s, l)
+            this.hexBox.setText(rgbToHex(...this.selectedColor))
+            mouseDown = false
+        }))
+
+        this.saturationSlider = new Slider().setMin(0).setMax(1).setLocation(0, 0.6, 1, 0.2)
+        this.mainElement.addChild(this.saturationSlider)
+        this.saturationSlider.addEvent(new SoopyContentChangeEvent().setHandler((val, oldVal) => {
+            if (val !== oldVal) this.colorImgNeedsRender = true
+        }))
+
+        this.hexBox = new TextBox().setPrefix("§7#§0").setLocation(0.01, 0.81, 0.98, 0.18)
+        this.mainElement.addChild(this.hexBox)
+        this.hexBox.text.addEvent(new SoopyContentChangeEvent().setHandler((current) => {
+            if (!hexToRgb(current)) {
+                return
+            }
+
+            let oldColor = [...this.selectedColor]
+            let { r, g, b } = hexToRgb(current)
+            this.setRGBColor(r, g, b)
+
+
+            this.triggerEvent(Enum.EVENT.CONTENT_CHANGE, [[r, g, b], oldColor, () => {
+                this.setRGBColor(...oldColor)
+            }])
+        }))
+
+        this.setRGBColor(0, 0, 0)
         this.isOpen = false
+    }
+
+    renderColorImage() {
+        this.buffI = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)
+
+        let s = this.saturationSlider.value
+
+        let rgbArr = java.lang.reflect.Array.newInstance(java.lang.Integer.TYPE, 100 * 100);
+
+        for (let x = 0; x < 100; x++) {
+            for (let y = 0; y < 100; y++) {
+                let col = hslToRgb(x / 100, s, y / 100)
+
+                rgbArr[x + y * 100] = Renderer.color(col[0], col[1], col[2])
+            }
+        }
+
+        this.buffI.setRGB(0, 0, 100, 100, rgbArr, 0, 100)
     }
 
     open() {
@@ -55,7 +166,7 @@ class ColorPicker extends SoopyBoxElement {
         let x = this.location.getXExact()
         let y = this.location.getYExact() + this.location.getHeightExact()
         let width = 0.2
-        let height = 0.3
+        let height = 0.4
 
         let animateUp = false
         if (y + height * Renderer.screen.getHeight() > Renderer.screen.getHeight()) {
@@ -78,7 +189,14 @@ class ColorPicker extends SoopyBoxElement {
     }
 
     setRGBColor(r, g, b) {
-        this.color = [r, g, b]
+        this.selectedColor = [r, g, b]
+
+        let [h, s, l] = rgbToHsl(...this.selectedColor)
+        this.saturationSlider.setValue(s)
+        this.colorImgNeedsRender = true
+
+        this.hexBox.setText(rgbToHex(r, g, b))
+
         return this
     }
 
@@ -158,4 +276,22 @@ function rgbToHsl(r, g, b) {
     }
 
     return [h, s, l];
+}
+
+//https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
 }
