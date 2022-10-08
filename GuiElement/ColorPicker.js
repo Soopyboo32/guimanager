@@ -207,6 +207,10 @@ class ColorPicker extends SoopyBoxElement {
         this.selectedColor = [r, g, b]
 
         let [h, s, l] = rgbToHsl(...this.selectedColor)
+        let maxedSat = hslToRgb(h, 1, l)
+        if (maxedSat[0] === r && maxedSat[1] === g && maxedSat[2] === b) {
+            s = 1
+        }
         this.saturationSlider.setValue(s)
         colorImgNeedsRender = true
 
