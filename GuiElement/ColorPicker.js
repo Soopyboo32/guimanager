@@ -109,9 +109,15 @@ class ColorPicker extends SoopyBoxElement {
             let l = MathLib.clampFloat((y - mainRenderElement.location.getYExact()) / mainRenderElement.location.getHeightExact(), 0, 1)
             let s = this.saturationSlider.value
 
+            let oldColor = [...this.selectedColor]
+
             this.selectedColor = hslToRgb(h, s, l)
             this.hexBox.setText(rgbToHex(...this.selectedColor))
             mouseDown = false
+
+            this.triggerEvent(Enum.EVENT.CONTENT_CHANGE, [[...this.selectedColor], oldColor, () => {
+                this.setRGBColor(...oldColor)
+            }])
         }))
 
         this.saturationSlider = new Slider().setMin(0).setMax(1).setLocation(0, 0.6, 1, 0.2)
