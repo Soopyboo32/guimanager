@@ -13,6 +13,11 @@ import TextBox from "./TextBox";
 const BufferedImage = Java.type("java.awt.image.BufferedImage")
 const Color = Java.type("java.awt.Color")
 
+let colorImg = new Image(new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB))
+let colorImgNeedsRender = false
+let renderingNewImg = 0
+let buffI
+
 class ColorPicker extends SoopyBoxElement {
     constructor() {
         super()
@@ -51,25 +56,21 @@ class ColorPicker extends SoopyBoxElement {
         this.addEvent(new SoopyOpenGuiEvent().setHandler(() => {
             this.close()
         }))
+        let mouseDown = false
 
         let mainRenderElement = new SoopyGuiElement().setLocation(0, 0, 1, 0.6)
         this.mainElement.addChild(mainRenderElement)
 
-        this.colorImg = new Image(new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB))
-        this.colorImgNeedsRender = 0
-        let mouseDown = false
-        let renderingNewImg = 0
-
         mainRenderElement.addEvent(new SoopyRenderEvent().setHandler((mx, my) => {
-            this.colorImg.draw(mainRenderElement.location.getXExact(), mainRenderElement.location.getYExact(), mainRenderElement.location.getWidthExact(), mainRenderElement.location.getHeightExact())
+            colorImg.draw(mainRenderElement.location.getXExact(), mainRenderElement.location.getYExact(), mainRenderElement.location.getWidthExact(), mainRenderElement.location.getHeightExact())
 
             if (renderingNewImg === 2) {
-                this.colorImg.destroy()
-                this.colorImg = new Image(this.buffI)
+                colorImg.destroy()
+                colorImg = new Image(buffI)
                 renderingNewImg = 0
             }
-            if (this.colorImgNeedsRender && !renderingNewImg) {
-                this.colorImgNeedsRender = false
+            if (colorImgNeedsRender && !renderingNewImg && this.isOpen) {
+                colorImgNeedsRender = false
                 renderingNewImg = 1
                 new Thread(() => {
                     this.renderColorImage()
@@ -116,7 +117,7 @@ class ColorPicker extends SoopyBoxElement {
         this.saturationSlider = new Slider().setMin(0).setMax(1).setLocation(0, 0.6, 1, 0.2)
         this.mainElement.addChild(this.saturationSlider)
         this.saturationSlider.addEvent(new SoopyContentChangeEvent().setHandler((val, oldVal) => {
-            if (val !== oldVal) this.colorImgNeedsRender = true
+            if (val !== oldVal) colorImgNeedsRender = true
         }))
 
         this.hexBox = new TextBox().setPrefix("§7#§0").setLocation(0.01, 0.81, 0.98, 0.18)
@@ -141,7 +142,7 @@ class ColorPicker extends SoopyBoxElement {
     }
 
     renderColorImage() {
-        this.buffI = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)
+        buffI = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)
 
         let s = this.saturationSlider.value
 
@@ -155,7 +156,7 @@ class ColorPicker extends SoopyBoxElement {
             }
         }
 
-        this.buffI.setRGB(0, 0, 100, 100, rgbArr, 0, 100)
+        buffI.setRGB(0, 0, 100, 100, rgbArr, 0, 100)
     }
 
     open() {
@@ -180,6 +181,8 @@ class ColorPicker extends SoopyBoxElement {
             this.mainElement.location.location.y.set((y + height * Renderer.screen.getHeight()) / Renderer.screen.getHeight(), 0)
             this.mainElement.location.location.y.set(y / Renderer.screen.getHeight(), 250)
         }
+
+        colorImgNeedsRender = true
     }
 
     close() {
@@ -193,7 +196,7 @@ class ColorPicker extends SoopyBoxElement {
 
         let [h, s, l] = rgbToHsl(...this.selectedColor)
         this.saturationSlider.setValue(s)
-        this.colorImgNeedsRender = true
+        colorImgNeedsRender = true
 
         this.hexBox.setText(rgbToHex(r, g, b))
 

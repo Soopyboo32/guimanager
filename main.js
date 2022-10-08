@@ -52,10 +52,14 @@ let textBox4 = new NumberTextBox().setLocation(0.1, y, 0.8, 0.2)
 textBox4.text.placeholder = "Number input2"
 box.addChild(textBox4)
 y += 0.2
-let colorPicker = new ColorPicker().setRGBColor(0, 255, 0).setLocation(0.1, y, 0.2, 0.2)
+let colorPicker1 = new ColorPicker().setRGBColor(0, 255, 0).setLocation(0.1, y, 0.2, 0.2)
+let colorPicker2 = new ColorPicker().setRGBColor(0, 255, 0).setLocation(0.4, y, 0.2, 0.2)
+let colorPicker3 = new ColorPicker().setRGBColor(0, 255, 0).setLocation(0.7, y, 0.2, 0.2)
 y += 0.2
 
-box.addChild(colorPicker)
+box.addChild(colorPicker1)
+box.addChild(colorPicker2)
+box.addChild(colorPicker3)
 
 let toggle = new Toggle().setLocation(0.1, y, 0.8, 0.2)
 y += 0.2
