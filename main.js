@@ -18,6 +18,7 @@ import SoopyGui from "./SoopyGui";
 import SoopyOpenGuiEvent from "./EventListener/SoopyOpenGuiEvent"
 import Slider from "./GuiElement/Slider";
 import ColorPicker from "./GuiElement/ColorPicker";
+import BoxWithGear from "./GuiElement/BoxWithGear";
 
 let testGui = new SoopyGui();
 
@@ -81,8 +82,12 @@ y += markUp.getHeight()
 let loading2 = new BoxWithLoading().setLocation(0.1, y, 0.8, 0.2).setLore(["Hello this is some HOVER LORE", "", "That is so pog right", "It should even have §6COLORS"])
 y += 0.2
 
+let settingGear = new BoxWithGear().setLocation(0.1, y, 0.8, 0.2)
+y += 0.2
+
 
 box.addChild(loading2)
+box.addChild(settingGear)
 
 let imageThing = new SoopyImageElement().setLocation(0.1, y, 0.8, 0.2).setImage("https://www.nurseriesonline.com.au/wp-content/uploads/2016/05/trees-for-narrow-spaces.jpg").loadHeightFromImage()
 

@@ -20,32 +20,32 @@ let WorldRenderer = Tessellator.func_178180_c()
 function getImageFromCache(url, waitForLoad = false, noDownload) {
     let urlId = url.replace(/[^A-z0-9]/g, "")
 
-    if (noDownload) return imagesCache[urlId]
+    if (noDownload) return imagesCache[url]
 
-    if (imagesCache[urlId] === undefined) {
-        imagesCache[urlId] = "LOADING"
+    if (imagesCache[url] === undefined) {
+        imagesCache[url] = "LOADING"
         if (!waitForLoad) {
             new Thread(() => {
                 try {
-                    imagesCache[urlId] = new Image(getBufferedImage(url))
+                    imagesCache[url] = new Image(getBufferedImage(url))
                 } catch (e) {
-                    imagesCache[urlId] = new Image(getBufferedImage(url.replace("https://", "http://")))
+                    imagesCache[url] = new Image(getBufferedImage(url.replace("https://", "http://")))
                 }
             }).start()
             return undefined
         } else {
             try {
-                imagesCache[urlId] = new Image(getBufferedImage(url))
+                imagesCache[url] = new Image(getBufferedImage(url))
             } catch (e) {
-                imagesCache[urlId] = new Image(getBufferedImage(url.replace("https://", "http://")))
+                imagesCache[url] = new Image(getBufferedImage(url.replace("https://", "http://")))
             }
-            return imagesCache[urlId]
+            return imagesCache[url]
         }
     }
-    if (imagesCache[urlId] === "LOADING") {
+    if (imagesCache[url] === "LOADING") {
         return undefined
     }
-    return imagesCache[urlId]
+    return imagesCache[url]
 }
 
 let URL = Java.type("java.net.URL")

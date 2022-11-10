@@ -464,6 +464,7 @@ class SoopyGuiElement {
     /**
      * Set wether is it possible to scroll
      * @param {Boolean} possible
+     * @returns {SoopyGuiElement} This for method chaining
      */
     setScrollable(possible) {
         this.scrollable = possible
