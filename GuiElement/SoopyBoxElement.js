@@ -39,7 +39,7 @@ class SoopyBoxElement extends SoopyGuiElement {
             }
         })
 
-        this.events.push(renderEvent)
+        this.addEvent(renderEvent)
 
         this.innerObject = new SoopyGuiElement()
 
@@ -54,6 +54,7 @@ class SoopyBoxElement extends SoopyGuiElement {
 
     renderBox(enabled) {
         this.actuallyDrawBox = enabled
+        this.dirtyDisplayList()
         return this
     }
 
@@ -63,6 +64,7 @@ class SoopyBoxElement extends SoopyGuiElement {
      */
     setScrollable(possible) {
         this.innerObject.scrollable = possible
+        this.dirtyDisplayList()
         return this;
     }
 
@@ -78,6 +80,7 @@ class SoopyBoxElement extends SoopyGuiElement {
         this.color[0].set(r, anim)
         this.color[1].set(g, anim)
         this.color[2].set(b, anim)
+        this.dirtyDisplayList(anim)
         return this
     }
 
@@ -96,6 +99,7 @@ class SoopyBoxElement extends SoopyGuiElement {
         this.colorOffset[0].set(r, anim)
         this.colorOffset[1].set(g, anim)
         this.colorOffset[2].set(b, anim)
+        this.dirtyDisplayList(anim)
         return this
     }
 }

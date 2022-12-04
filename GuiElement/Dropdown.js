@@ -49,6 +49,7 @@ class Dropdown extends BoxWithText {
 
         this.mainElement = new SoopyBoxElement()
         this.mainElement.location.size.setRelative(true, false)
+        this.mainElement.dirtyDisplayList(Infinity)
 
         this.itemsElement = new SoopyGuiElement().setScrollable(true).setLocation(0, 0, 1, 0)
         this.itemsElement.location.size.setRelative(true, false)
@@ -126,12 +127,16 @@ class Dropdown extends BoxWithText {
         this.itemsElement.location.scroll.y.set(0, 250)
 
         this.regenOptions()
+
+        this.dirtyDisplayList(250)
     }
 
     setColorPrefix(pre) {
         this.colorPrefix = pre
 
         this.text.setText(this.colorPrefix + this.options[this.selectedOption])
+
+        this.dirtyDisplayList()
         return this
     }
 
@@ -143,6 +148,8 @@ class Dropdown extends BoxWithText {
         this.isOpen = false
 
         this.mainElement.location.size.y.set(0, 250)
+
+        this.dirtyDisplayList(250)
     }
 
     setOptions(options) {
@@ -185,6 +192,8 @@ class Dropdown extends BoxWithText {
     setSelectedOption(option) {
         this.selectedOption = option
         this.text.setText(this.colorPrefix + this.options[option])
+
+        this.dirtyDisplayList()
         return this
     }
 

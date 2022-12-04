@@ -11,6 +11,7 @@ class TextBox extends SoopyBoxElement {
 
     setText(text) {
         this.text.setText(text)
+        this.dirtyDisplayList()
         return this
     }
 
@@ -20,26 +21,31 @@ class TextBox extends SoopyBoxElement {
 
     setPrefix(text) {
         this.text.setPrefix(text)
+        this.dirtyDisplayList()
         return this
     }
 
     setSuffix(text) {
         this.text.setSuffix(text)
+        this.dirtyDisplayList()
         return this
     }
 
     setPlaceholder(placeholder) {
         this.text.placeholder = placeholder
+        this.dirtyDisplayList()
         return this;
     }
 
     select() {
         this.text.selected = true
+        this.dirtyDisplayList()
         return this
     }
 
     deselect() {
         this.text.selected = false
+        this.dirtyDisplayList()
         return this
     }
 }

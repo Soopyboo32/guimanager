@@ -31,12 +31,34 @@ class SoopyLocation {
         this.heightCache = undefined
         this.xCache = undefined
         this.yCache = undefined
+        this.onChangeFunctions = []
 
         this.scroll = new SoopyPosition(0, 0).setRelative(false, false).shouldNegativeWrap(false).setAnimMode("sin_out").enableCache()
 
         this.shouldCache = false
 
         this.referanceFrame = referanceFrame
+
+        this.referanceFrame?.onchange?.(time => {
+            for (let fun of this.onChangeFunctions) {
+                fun(time)
+            }
+        })
+        this.location?.onchange?.(time => {
+            for (let fun of this.onChangeFunctions) {
+                fun(time)
+            }
+        })
+        this.size?.onchange?.(time => {
+            for (let fun of this.onChangeFunctions) {
+                fun(time)
+            }
+        })
+        this.scroll?.onchange?.(time => {
+            for (let fun of this.onChangeFunctions) {
+                fun(time)
+            }
+        })
     }
 
     /**
@@ -120,6 +142,16 @@ class SoopyLocation {
      */
     disableCache() {
         this.shouldCache = false
+        return this
+    }
+
+    /**
+     * Callback function for when the values have changed
+     * @param {function(time:number))} fun 
+     * @returns {SoopyLocation} this for method chaining
+     */
+    onchange(fun) {
+        this.onChangeFunctions.push(fun)
         return this
     }
 }

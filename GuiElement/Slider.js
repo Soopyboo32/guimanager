@@ -66,7 +66,7 @@ class Slider extends SoopyGuiElement {
 
             Renderer.drawRect(Renderer.color(...sliderMainColor), boxX - h / 2, this.location.getYExact(), h, this.location.getHeightExact())
         })
-        this.events.push(renderEvent)
+        this.addEvent(renderEvent)
 
         let clickEvent = new SoopyMouseClickEvent()
         clickEvent.setHandler((mx, my, button) => {
@@ -83,8 +83,9 @@ class Slider extends SoopyGuiElement {
             } else if (mx >= x && mx <= x + w) {
                 this.tempSlidingThingX = 0
             }
+            this.dirtyDisplayList(Infinity)
         })
-        this.events.push(clickEvent)
+        this.addEvent(clickEvent)
 
         let unclickEvent = new SoopyMouseReleaseEvent()
         unclickEvent.setHandler((mx, my, button) => {
@@ -105,8 +106,10 @@ class Slider extends SoopyGuiElement {
             this.triggerEvent(Enum.EVENT.CONTENT_CHANGE, [this.value, oldValue, () => {
                 this.setValue(oldValue, 0)
             }])
+            this.displayListDirty = true
+            this.dirtyDisplayList()
         })
-        this.events.push(unclickEvent)
+        this.addEvent(unclickEvent)
     }
 
     /**
@@ -118,6 +121,7 @@ class Slider extends SoopyGuiElement {
     setValue(val, anim = 0) {
         this.value = val
         this.sliderProgress.set(val, anim)
+        this.dirtyDisplayList()
         return this
     }
 
@@ -130,6 +134,7 @@ class Slider extends SoopyGuiElement {
     setMin(min, anim = 0) {
         this.min = min
         this.sliderMin.set(min, anim)
+        this.dirtyDisplayList()
         return this
     }
 
@@ -142,6 +147,7 @@ class Slider extends SoopyGuiElement {
     setMax(max, anim = 0) {
         this.max = max
         this.sliderMax.set(max, anim)
+        this.dirtyDisplayList()
         return this
     }
 }

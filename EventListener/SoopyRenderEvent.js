@@ -10,33 +10,29 @@ import renderLibs from "../renderLibs"
  * @class
  * @extends SoopyRenderEvent
  */
-class SoopyRenderEvent extends SoopyEventListener{
-    
+class SoopyRenderEvent extends SoopyEventListener {
+
     /**
      * Creates a {@link SoopyRenderEvent}
      * @constructor
      */
-    constructor(){
+    constructor() {
         super(Enums.EVENT.RENDER)
     }
 
-    
+
     /**
      * Triggers the event handler with the given arguments
      * 
      * @param {Array.<any>} args The list of arguments to pass to the event handler
      */
-    _trigger(caller, args){
+    _trigger(caller, args) {
         let boundingBox = caller.getBoundingBox()
 
-        if(!caller.main.isDebugEnabled)renderLibs.scizzorFast(boundingBox[0], boundingBox[1], boundingBox[2]-boundingBox[0], boundingBox[3]-boundingBox[1])
+        if (!caller.main.isDebugEnabled) renderLibs.scizzorFast(boundingBox[0], boundingBox[1], boundingBox[2] - boundingBox[0], boundingBox[3] - boundingBox[1])
         super._trigger(caller, args)
-        
-        if(!caller.main.isDebugEnabled)renderLibs.stopScizzor()
 
-        if(caller.main.isDebugEnabled && caller.hovered){
-            Renderer.drawRect(Renderer.color(255, 0, 0, 100),boundingBox[0], boundingBox[1], boundingBox[2]-boundingBox[0], boundingBox[3]-boundingBox[1])
-        }
+        if (!caller.main.isDebugEnabled) renderLibs.stopScizzor()
     }
 
     /**
@@ -47,7 +43,7 @@ class SoopyRenderEvent extends SoopyEventListener{
      * @param {*} caller 
      * @param {*} args 
      */
-    _shouldTrigger(caller, args){
+    _shouldTrigger(caller, args) {
         return !!caller.getBoundingBox()
     }
 }

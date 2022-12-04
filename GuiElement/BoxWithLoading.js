@@ -18,8 +18,9 @@ class BoxWithLoading extends SoopyBoxElement {
     constructor() {
         super();
 
-        let renderEvent = new SoopyRenderEvent()
+        this.dirtyDisplayList(Infinity)
 
+        let renderEvent = new SoopyRenderEvent()
 
         renderEvent.setHandler(() => {
             if (!loadingImage) return
@@ -32,7 +33,7 @@ class BoxWithLoading extends SoopyBoxElement {
             loadingImage.draw(-size / 2, -size / 2, size, size)
         })
 
-        this.events.push(renderEvent)
+        this.addEvent(renderEvent)
     }
 }
 

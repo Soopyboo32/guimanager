@@ -5,6 +5,7 @@ import SoopyRenderEvent from "../EventListener/SoopyRenderEvent"
 import SoopyGuiElement from "./SoopyGuiElement"
 
 import renderLibs from "../renderLibs"
+import SoopyRenderUpdateEvent from "../EventListener/SoopyRenderUpdateEvent"
 
 /**
  * A box.
@@ -38,7 +39,13 @@ class SoopyMarkdownElement extends SoopyGuiElement {
             this.location.size.y.set(newHeight)
         })
 
-        this.events.push(renderEvent)
+        this.addEvent(renderEvent)
+
+        let frames = 0
+        this.addEvent(new SoopyRenderUpdateEvent().setHandler(() => {
+            if (frames % 10 === 0) this.dirtyDisplayList()
+            frames++
+        }))
     }
 
     /**
@@ -49,6 +56,7 @@ class SoopyMarkdownElement extends SoopyGuiElement {
     setText(text) {
         this.text = text
         this.textDarkThemeCache = renderLibs.darkThemifyText(text)
+        this.dirtyDisplayList()
         return this
     }
 
@@ -64,6 +72,7 @@ class SoopyMarkdownElement extends SoopyGuiElement {
 
         let newHeight = height / this.parent.location.getHeightExact()
         this.location.size.y.set(newHeight)
+        this.dirtyDisplayList()
         return newHeight
     }
 }

@@ -35,16 +35,19 @@ class EditableText extends SoopyGuiElement {
     setText(text) {
         this.text = text
         this.cursorTextLocationId = text.length
+        this.dirtyDisplayList()
         return this
     }
 
     setPrefix(text) {
         this.prefix = text
+        this.dirtyDisplayList()
         return this
     }
 
     setSuffix(text) {
         this.suffix = text
+        this.dirtyDisplayList()
         return this
     }
 
@@ -72,10 +75,12 @@ class EditableText extends SoopyGuiElement {
         if (mouseX > textX + widthSoFar) {
             this.cursorTextLocationId = this.text.length
         }
+        this.dirtyDisplayList()
     }
 
     mouseClickG(mouseX, mouseY) {
         this.selected = false
+        this.dirtyDisplayList()
     }
 
     keyPress(key, keyId) {
@@ -176,6 +181,8 @@ class EditableText extends SoopyGuiElement {
             this.text = prevText
             this.cursorTextLocationId = prevCursorLocation
         }])
+
+        this.dirtyDisplayList(250)
     }
 
     render(mouseX, mouseY) {

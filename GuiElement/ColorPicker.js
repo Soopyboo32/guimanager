@@ -61,6 +61,7 @@ class ColorPicker extends SoopyBoxElement {
 
         let mainRenderElement = new SoopyGuiElement().setLocation(0, 0, 1, 0.6)
         this.mainElement.addChild(mainRenderElement)
+        mainRenderElement.dirtyDisplayList(Infinity)
 
         mainRenderElement.addEvent(new SoopyRenderEvent().setHandler((mx, my) => {
             colorImg.draw(mainRenderElement.location.getXExact(), mainRenderElement.location.getYExact(), mainRenderElement.location.getWidthExact(), mainRenderElement.location.getHeightExact())
@@ -169,6 +170,7 @@ class ColorPicker extends SoopyBoxElement {
         }
 
         buffI.setRGB(0, 0, 100, 100, rgbArr, 0, 100)
+        this.dirtyDisplayList()
     }
 
     open() {
@@ -195,12 +197,14 @@ class ColorPicker extends SoopyBoxElement {
         }
 
         colorImgNeedsRender = true
+        this.dirtyDisplayList()
     }
 
     close() {
         this.isOpen = false
 
         this.mainElement.location.size.y.set(0, 250)
+        this.dirtyDisplayList()
     }
 
     setRGBColor(r, g, b) {
@@ -215,6 +219,7 @@ class ColorPicker extends SoopyBoxElement {
         colorImgNeedsRender = true
 
         this.hexBox.setText(rgbToHex(r, g, b))
+        this.dirtyDisplayList()
 
         return this
     }

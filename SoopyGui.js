@@ -19,6 +19,8 @@ if (!global.guiManagerSoopyGuisList) {
             global.guiManagerSoopyGuisDarkThemeEnabled = enabled
             global.guiManagerSoopyGuisList.forEach(gui => {
                 gui.darkThemeEnabled = enabled
+
+                gui.element.dirtyDisplayListChildren()
             })
         }
     }
@@ -83,7 +85,6 @@ class SoopyGui {
          */
         this._hoveredElement = undefined
 
-
         this.eventsList.push(this.ctGui.registerDraw((mouseX, mouseY, partialTicks) => {
             this._render(mouseX, mouseY, partialTicks)
         }))
@@ -130,11 +131,17 @@ class SoopyGui {
         this.darkThemeEnabled = global.guiManagerSoopyGuisDarkThemeEnabled
 
         this.eventsList.push(register("step", () => {
+            if (!this.isOpen) return
+            // let start = Date.now()
             if (this.optimisedLocations && !this.slowLocations) this.element.triggerEvent(Enums.EVENT.RESET_FRAME_CACHES)
+            // ChatLib.chat("frame caches Update " + (Date.now() - start))
         }).setFps(10))
 
         this.eventsList.push(register("step", () => {
+            if (!this.isOpen) return
+            // let start = Date.now()
             if (this.slowLocations) this.element.triggerEvent(Enums.EVENT.RESET_FRAME_CACHES)
+            // ChatLib.chat("frame caches Update " + (Date.now() - start))
         }).setFps(1))
     }
 
@@ -220,6 +227,8 @@ class SoopyGui {
      */
     _render(mouseX, mouseY, partialTicks) {
         try {
+            Renderer.drawString("asd", -10000, -10000) //fix texture or something for display list
+
             this._loreData = undefined
 
             this._renderBackground(mouseX, mouseY, partialTicks)
@@ -228,8 +237,12 @@ class SoopyGui {
 
             let oldHoveredElement = this._hoveredElement
 
+            // let start = Date.now()
             this.element.triggerEvent(Enums.EVENT.RENDER_UPDATE, [mouseX, mouseY, partialTicks])
+            // ChatLib.chat("Render Update " + (Date.now() - start))
+            // start = Date.now()
             this.element.triggerEvent(Enums.EVENT.RENDER, [mouseX, mouseY, partialTicks])
+            // ChatLib.chat("Render " + (Date.now() - start))
 
             Notification.doRender()
 
@@ -473,6 +486,7 @@ let commandConsoleCommands = {
             } else {
                 if (element.children.length === 0) console.log(tabs + "  ")
             }
+            console.log(tabs + "  " + "\"displayListDirty\": " + element.displayListDirty)
             element.children.forEach(child => {
                 logElement(child, tabs + "  ")
             })
@@ -483,6 +497,10 @@ let commandConsoleCommands = {
     "theme": (gui) => {
         gui.darkThemeEnabled = !gui.darkThemeEnabled
         new Notification((gui.darkThemeEnabled ? "enabled" : "disabled") + " dark theme", [])
+    },
+    "bufferdirty": (gui) => {
+        gui.element.dirtyDisplayListChildren()
+        new Notification("Rerendering gui", [])
     },
     "default": (gui) => {
         //unknown command

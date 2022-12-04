@@ -18,7 +18,6 @@ if (!OpenGlHelper) {
     var OpenGlHelper = Java.type("net.minecraft.client.renderer.OpenGlHelper")
 }
 
-let Framebuffer = Java.type("net.minecraft.client.shader.Framebuffer")
 import Enum from "../Enum"
 import SoopyEventListener from "../EventListener/SoopyEventListener"
 import SoopyPosition from "../Classes/SoopyPosition"
@@ -44,10 +43,10 @@ class SoopyGuiElement {
      */
     constructor() {
         /**
-         * The list of all the events linked to this gui element
-         * @type {Array.<SoopyEventListener>}
+         * The map from event type too an array of all the events linked to this gui element
+         * @type {Map<Enum.EVENT, SoopyEventListener>}
          */
-        this.events = []
+        this.events = new Map()
 
         /**
          * The parent element
@@ -65,7 +64,9 @@ class SoopyGuiElement {
          * The location of the gui element
          * @type {SoopyLocation}
          */
-        this.location = new SoopyLocation(new SoopyPosition(0, 0), new SoopyPosition(1, 1), undefined).enableCache()
+        this.location = new SoopyLocation(new SoopyPosition(0, 0), new SoopyPosition(1, 1), undefined).enableCache().onchange(time => {
+            this.dirtyDisplayList(time)
+        })
 
         /**
          * Wether the gui element is hovered
@@ -84,11 +85,11 @@ class SoopyGuiElement {
          */
         this.lore = undefined
 
-        this._framebuffer = undefined
+        this.listname = undefined
 
-        this.framebufferEnabledOnElement = false
+        this.displayListEnabledOnElement = true
 
-        this.frameBufferDirty = false
+        this.displayListDirty = true
 
         /**
          * Wether to render this element
@@ -101,7 +102,7 @@ class SoopyGuiElement {
         this.innerObjectPaddingThing = undefined
 
 
-        this.events.push(new SoopyEventListener(Enum.EVENT.RESET_FRAME_CACHES).setHandler(() => {
+        this.addEvent(new SoopyEventListener(Enum.EVENT.RESET_FRAME_CACHES).setHandler(() => {
             this.boundingBoxCached = undefined
             this.location.clearCache()
         }))
@@ -111,7 +112,7 @@ class SoopyGuiElement {
         this._scrollbarHoldY = undefined
         this._tempScrollbarWidth = new SoopyNumber(0)
 
-        this.events.push(new SoopyMouseScrollEvent().setHandler((mouseX, mouseY, scroll) => {
+        this.addEvent(new SoopyMouseScrollEvent().setHandler((mouseX, mouseY, scroll) => {
             if (this.scrollable && this.hovered) {
                 this._scrollAmount += scroll * 30
                 let maxScroll = 0
@@ -124,10 +125,12 @@ class SoopyGuiElement {
                 this._scrollAmount = Math.min(Math.max(-maxScroll, this._scrollAmount), 0)
                 this.location.scroll.y.set(this._scrollAmount, 100)
                 this._lastScrolled = Date.now()
+
+                this.dirtyDisplayListChildren(100)
             }
         }))
 
-        this.events.push(new SoopyMouseClickEvent().setHandler((mouseX, mouseY, button) => {
+        this.addEvent(new SoopyMouseClickEvent().setHandler((mouseX, mouseY, button) => {
 
             if (mouseX <= this.location.getXExact() + this.location.getWidthExact() - 8 || mouseX >= this.location.getXExact() + this.location.getWidthExact() || mouseY <= this.location.getYExact() || mouseY >= this.location.getYExact() + this.location.getHeightExact()) return
 
@@ -145,9 +148,11 @@ class SoopyGuiElement {
             if (mouseY >= this.location.getYExact() + scrollBarY && mouseY <= this.location.getYExact() + scrollBarY + scrollBarHeight) {
                 this._scrollbarHoldY = mouseY - (this.location.getYExact() + scrollBarY) + 1
             }
+
+            this.dirtyDisplayListChildren(1000)
         }))
 
-        this.events.push(new SoopyMouseReleaseEvent().setHandler((mouseX, mouseY, button) => {
+        this.addEvent(new SoopyMouseReleaseEvent().setHandler((mouseX, mouseY, button) => {
             if (this._scrollbarHoldY) {
                 let maxScroll = 0
                 for (let child of this.children) {
@@ -161,10 +166,12 @@ class SoopyGuiElement {
                 this.location.scroll.y.set(this._scrollAmount, 0)
 
                 this._scrollbarHoldY = undefined
+
+                this.dirtyDisplayListChildren()
             }
         }))
 
-        this.events.push(new SoopyRenderEvent().setHandler((mouseX, mouseY) => {
+        this.addEvent(new SoopyRenderEvent().setHandler((mouseX, mouseY) => {
             //rendering scrollbar stuff
             if (this.scrollable && (this._tempScrollbarWidth.isAnimating() || Date.now() - this._lastScrolled < 3000 || (mouseX > this.location.getXExact() + this.location.getWidthExact() - 32 && mouseX < this.location.getXExact() + this.location.getWidthExact() && mouseY > this.location.getYExact() && mouseY < this.location.getYExact() + this.location.getHeightExact()))) {
                 let maxScroll = 0
@@ -179,21 +186,26 @@ class SoopyGuiElement {
                 if (this._scrollbarHoldY) {
                     this._scrollAmount = Math.min(Math.max(-(maxScroll - (this.location.getHeightExact() - 2)), (-(mouseY - this.location.getYExact() - (this._scrollbarHoldY - 1))) * maxScroll / this.location.getHeightExact()), 0)
                     this.location.scroll.y.set(this._scrollAmount, 0)
+
+                    this.dirtyDisplayListChildren(1000)
                 }
 
                 let scrollBarY = -this.location.scroll.getYAsExact(undefined, false) / (maxScroll) * this.location.getHeightExact()
                 let mouseHover = (mouseX > this.location.getXExact() + this.location.getWidthExact() - 32 && mouseX < this.location.getXExact() + this.location.getWidthExact() && mouseY > this.location.getYExact() && mouseY < this.location.getYExact() + this.location.getHeightExact())
                 if (mouseHover || this._scrollbarHoldY) {
                     this._tempScrollbarWidth.set(8, 200)
+                    this.dirtyDisplayList(200)
                 } else {
                     if (Date.now() - this._lastScrolled < 3000) {
                         this._tempScrollbarWidth.set(4, 200)
+                        this.dirtyDisplayList(200)
                     }
                 }
                 Renderer.translate(0, 0, 10)
                 Renderer.drawRect(this.isDarkThemeEnabled() ? Renderer.color(200, 200, 200) : Renderer.color(0, 0, 0), this.location.getXExact() + this.location.getWidthExact() - this._tempScrollbarWidth.get(), this.location.getYExact() + scrollBarY, this._tempScrollbarWidth.get(), scrollBarHeight)
-            } else {
+            } else if (this._tempScrollbarWidth.number !== 0) {
                 this._tempScrollbarWidth.set(0, 200)
+                this.dirtyDisplayList(200)
             }
         }))
 
@@ -210,9 +222,11 @@ class SoopyGuiElement {
                     this.main._loreData = [mouseX, mouseY, this.lore]
                 }
             }
+
+            // if (Math.random() > 0.99) this.dirtyDisplayList()
         })
 
-        this.events.push(renderEvent)
+        this.addEvent(renderEvent)
     }
 
     /**
@@ -240,119 +254,147 @@ class SoopyGuiElement {
         if (!this.visable && eventType === Enum.EVENT.RENDER) return;
         if (!this.visable && eventType === Enum.EVENT.RENDER_UPDATE) return;
 
-        let usingFrameBuffer = false
-        if (eventType === Enum.EVENT.RENDER && this.shouldUpdateFrameBuffer()) {
-            usingFrameBuffer = true
+        let usingDisplayList = false
 
-            // GlStateManager.func_179109_b(-this.location.getXExact(), -this.location.getYExact(), 0)
+        let childRenderingDisplayList = this.childRenderingDisplayList()
+        if (eventType === Enum.EVENT.RENDER && this.shouldUpdateDisplayList() && !childRenderingDisplayList) {
+            usingDisplayList = true
 
-            // GlStateManager.func_179152_a(Renderer.screen.getWidth()/this.location.getWidthExact(), Renderer.screen.getHeight()/this.location.getHeightExact(), 1)
-
-            if (!this._framebuffer) {
-                // this._framebuffer = new Framebuffer(this.location.getWidthExact()*Renderer.screen.getScale(), this.location.getHeightExact()*Renderer.screen.getScale(), false)
-                this._framebuffer = new Framebuffer(Renderer.screen.getWidth() * 2, Renderer.screen.getHeight() * 2, false)
+            if (!this.listname) {
+                this.listname = GL11.glGenLists(1)
             }
-
-            // if(this._framebuffer.field_147621_c !== this.location.getWidthExact()*Renderer.screen.getScale() || this._framebuffer.field_147618_d !== this.location.getHeightExact()*Renderer.screen.getScale()) this._framebuffer.func_147613_a(this.location.getWidthExact()*Renderer.screen.getScale(), this.location.getHeightExact()*Renderer.screen.getScale())
-
-            this._framebuffer.func_147614_f()//clear framebuffer
-            this._framebuffer.func_147610_a(true)//bind framebuffer
-
-
-            // GlStateManager.func_179128_n(GL11.GL_PROJECTION); //matrixMode
-            // GlStateManager.func_179096_D(); //loadIdentity
-            // GlStateManager.func_179130_a(0.0, this.location.getWidthExact(), this.location.getHeightExact(), 0.0, 1000.0, 3000.0); //ortho
-            // GlStateManager.func_179128_n(GL11.GL_MODELVIEW); //matrixMode
-
-            GlStateManager.func_179094_E()
-
-            // renderLibs.sizzorOverride = {
-            //     disabled: true
-            // }
-
-            // Renderer.translate(-this.location.getXExact()*Renderer.screen.getScale(),
-            //  (Renderer.screen.getHeight()-this.location.getYExact()-this.location.getHeightExact())*Renderer.screen.getScale(), 0)
+            GL11.glNewList(this.listname, GL11.GL_COMPILE_AND_EXECUTE)
         }
 
-        if ((eventType !== Enum.EVENT.RENDER || usingFrameBuffer || !this.shouldUseFrameBuffer() || !this._framebuffer)) {
-            let shouldTrigger = undefined
-            for (let event of this.events) {
-                if (event.eventType === eventType) {
-                    if (shouldTrigger === undefined) shouldTrigger = event._shouldTrigger(this, data)
-                    if (shouldTrigger) event._trigger(this, data)
-                }
+        let drawDebug = false
+        let didRender = false
+        if ((eventType !== Enum.EVENT.RENDER || usingDisplayList || !this.shouldUseDisplayList() || !this.listname || childRenderingDisplayList)) {
+            didRender = true
+
+            for (let event of (this.events.get(eventType) || [])) {
+                event._trigger(this, data)
             }
 
-            if (shouldTrigger === undefined) shouldTrigger = true
-            if (shouldTrigger && triggerChildren) {
+            if (triggerChildren) {
                 for (let child of this.children) {
-                    child.triggerEvent(eventType, data)
+                    let shouldTrigger = child.events.get(eventType)?.[0]?._shouldTrigger?.(child, data) ?? true
+
+                    if (shouldTrigger) child.triggerEvent(eventType, data)
                 }
+            }
+
+            if (this.main?.isDebugEnabled && eventType === Enum.EVENT.RENDER) {
+                drawDebug = true
             }
         }
 
-        if (usingFrameBuffer) {
-            // GlStateManager.func_179109_b(-this.location.getXExact(), -this.location.getYExact(), 0); //translate
-            // this._framebuffer.func_147609_e()
+        if (usingDisplayList) {
+            GL11.glEndList()
 
-            // GlStateManager.func_179128_n(GL11.GL_PROJECTION);
-            // GlStateManager.func_179096_D();
-            // GlStateManager.func_179130_a(0.0, Renderer.screen.getWidth()*Renderer.screen.getScale(), Renderer.screen.getHeight()*Renderer.screen.getScale(),
-            //         0.0, 1000.0, 3000.0);
-            // GlStateManager.func_179128_n(GL11.GL_MODELVIEW);
-
-            // GlStateManager.func_179121_F()
-            GlStateManager.func_179121_F()
-            Client.getMinecraft().func_147110_a().func_147610_a(true);
-
-            if (typeof this.frameBufferDirty === "number") {
-                if (Date.now() > this.frameBufferDirty) {
-                    this.frameBufferDirty = false
+            if (typeof this.displayListDirty === "number") {
+                if (Date.now() > this.displayListDirty) {
+                    this.displayListDirty = true
                 }
             } else {
-                this.frameBufferDirty = false
+                this.displayListDirty = false
+            }
+
+            if (this.main.isDebugEnabled) {
+                drawDebug = false
+
+                Renderer.drawRect(Renderer.color(255, 0, 0, 100), this.location.getXExact(), this.location.getYExact(), this.location.getWidthExact(), 4)
+                Renderer.drawRect(Renderer.color(255, 0, 0, 100), this.location.getXExact(), this.location.getYExact() + 4, 4, this.location.getHeightExact() - 4)
+                Renderer.drawRect(Renderer.color(255, 0, 0, 100), this.location.getXExact() + 4, this.location.getYExact() + this.location.getHeightExact() - 4, this.location.getWidthExact() - 4, 4)
+                Renderer.drawRect(Renderer.color(255, 0, 0, 100), this.location.getXExact() + this.location.getWidthExact() - 4, this.location.getYExact() + 4, 4, this.location.getHeightExact() - 4)
             }
         }
 
-        if (eventType === Enum.EVENT.RENDER && this.shouldUseFrameBuffer() && this._framebuffer) {
-            // GlStateManager.func_179147_l();//enableBlend
-            // GlStateManager.func_179120_a(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA); //tryBlendFuncSeparate
-            // GlStateManager.func_179131_c(1, 1, 1, 1); // color 
+        if (!didRender && eventType === Enum.EVENT.RENDER && this.shouldUseDisplayList() && this.listname && !usingDisplayList) {
+            GL11.glCallList(this.listname)
 
-            // this._framebuffer.func_147612_c()
-            // renderLibs.stopScizzor()
-
-            // drawFrameBuffer(this._framebuffer, this.location.getXExact(), this.location.getYExact(), this.location.getWidthExact(), this.location.getHeightExact())
-            drawFrameBuffer(this._framebuffer, 0, 0, Renderer.screen.getWidth(), Renderer.screen.getHeight())
+            if (this.main.isDebugEnabled) {
+                Renderer.drawRect(Renderer.color(0, 0, 255, 100), this.location.getXExact(), this.location.getYExact(), this.location.getWidthExact(), 4)
+                Renderer.drawRect(Renderer.color(0, 0, 255, 100), this.location.getXExact(), this.location.getYExact() + 4, 4, this.location.getHeightExact() - 4)
+                Renderer.drawRect(Renderer.color(0, 0, 255, 100), this.location.getXExact() + 4, this.location.getYExact() + this.location.getHeightExact() - 4, this.location.getWidthExact() - 4, 4)
+                Renderer.drawRect(Renderer.color(0, 0, 255, 100), this.location.getXExact() + this.location.getWidthExact() - 4, this.location.getYExact() + 4, 4, this.location.getHeightExact() - 4)
+            }
+        }
+        if (drawDebug) {
+            Renderer.drawRect(Renderer.color(0, 255, 0, 100), this.location.getXExact(), this.location.getYExact(), this.location.getWidthExact(), 4)
+            Renderer.drawRect(Renderer.color(0, 255, 0, 100), this.location.getXExact(), this.location.getYExact() + 4, 4, this.location.getHeightExact() - 4)
+            Renderer.drawRect(Renderer.color(0, 255, 0, 100), this.location.getXExact() + 4, this.location.getYExact() + this.location.getHeightExact() - 4, this.location.getWidthExact() - 4, 4)
+            Renderer.drawRect(Renderer.color(0, 255, 0, 100), this.location.getXExact() + this.location.getWidthExact() - 4, this.location.getYExact() + 4, 4, this.location.getHeightExact() - 4)
         }
     }
 
-    shouldUpdateFrameBuffer() {
-        // for(let child of this.children){
-        //     if(child.shouldUpdateFrameBuffer()) return false
-        // }
-        return this.shouldUseFrameBuffer() && (!this._framebuffer || (this.frameBufferDirty === true || (
-            typeof this.frameBufferDirty === "number" && Date.now() > this.frameBufferDirty
-        )))
+    childRenderingDisplayList() {
+        for (let child of this.children) {
+            if (!child.visable) continue
+            if (!child.getBoundingBox()) continue
+
+            if (child.shouldUpdateDisplayList()) return true
+        }
+
+        return false
     }
 
-    shouldUseFrameBuffer() {
-        return this.framebufferEnabledOnElement
+    shouldUpdateDisplayList() {
+        return this.shouldUseDisplayList() && !!this.displayListDirty
     }
 
-    enableFrameBuffer() {
-        this.framebufferEnabledOnElement = OpenGlHelper.func_148822_b() // OpenGlHelper.isFramebufferEnabled()
+    shouldUseDisplayList() {
+        return this.displayListEnabledOnElement
+    }
+
+    enableDisplayList() {
+        this.displayListEnabledOnElement = true//OpenGlHelper.func_148822_b() // OpenGlHelper.isFramebufferEnabled()
         return this
     }
 
-    dirtyFrameBuffer(time) {
-        if (time) this.frameBufferDirty = Date.now() + time
-        else this.frameBufferDirty = true
+    dirtyDisplayList(time) {
+        if (time) {
+            if (typeof this.displayListDirty === "number" && this.displayListDirty < Date.now() + time) {
+                this.displayListDirty = Date.now() + time
+            } else if (typeof this.displayListDirty === "boolean") {
+                this.displayListDirty = Date.now() + time
+            }
+        } else {
+            if (typeof this.displayListDirty === "number" && this.displayListDirty < Date.now()) {
+                this.displayListDirty = true
+            } else if (typeof this.displayListDirty === "boolean") {
+                this.displayListDirty = true
+            }
+        }
+
+        this.parent?.dirtyDisplayList?.(time)
+
         return this
     }
 
-    disableFrameBuffer() {
-        this.framebufferEnabledOnElement = false
+    dirtyDisplayListChildren(time) {
+        if (time) {
+            if (typeof this.displayListDirty === "number" && this.displayListDirty < Date.now() + time) {
+                this.displayListDirty = Date.now() + time
+            } else if (typeof this.displayListDirty === "boolean") {
+                this.displayListDirty = Date.now() + time
+            }
+        } else {
+            if (typeof this.displayListDirty === "number" && this.displayListDirty < Date.now()) {
+                this.displayListDirty = true
+            } else if (typeof this.displayListDirty === "boolean") {
+                this.displayListDirty = true
+            }
+        }
+
+        for (let c of this.children) {
+            c.dirtyDisplayListChildren(time)
+        }
+
+        return this
+    }
+
+    disableDisplayList() {
+        this.displayListEnabledOnElement = false
         return this
     }
 
@@ -396,7 +438,6 @@ class SoopyGuiElement {
      * @returns {SoopyGuiElement} This for method chaining
      */
     addChild(child) {
-
         if (child.parent) {
             child.parent.removeChild(child)
         }
@@ -404,6 +445,7 @@ class SoopyGuiElement {
         let theParent = this.innerObjectPaddingThing || this
         child.setParent(theParent).setMain(this.main)
         theParent.children.push(child)
+        this.dirtyDisplayList()
         return this
     }
 
@@ -427,6 +469,7 @@ class SoopyGuiElement {
         let theParent = this.innerObjectPaddingThing || this
         child.setParent(undefined)
         theParent.children = theParent.children.filter(c => c.parent)
+        this.dirtyDisplayList()
         return this
     }
     /**
@@ -439,6 +482,7 @@ class SoopyGuiElement {
             child.setParent(undefined)
         });
         theParent.children = []
+        this.dirtyDisplayList()
         return this
     }
     /**
@@ -447,7 +491,11 @@ class SoopyGuiElement {
      * @returns {SoopyGuiElement} This for method chaining
      */
     addEvent(event) {
-        this.events.push(event)
+        if (!this.events.get(event.eventType))
+            this.events.set(event.eventType, [])
+
+        this.events.get(event.eventType).push(event)
+        this.dirtyDisplayList()
         return this
     }
 
@@ -458,6 +506,7 @@ class SoopyGuiElement {
     setParent(parent) {
         this.parent = parent
         if (parent) this.location.referanceFrame = parent.location
+        this.dirtyDisplayList()
         return this;
     }
 
@@ -468,6 +517,7 @@ class SoopyGuiElement {
      */
     setScrollable(possible) {
         this.scrollable = possible
+        this.dirtyDisplayList()
         return this;
     }
 
@@ -484,11 +534,13 @@ class SoopyGuiElement {
         this.location.location.y.set(y)
         this.location.size.x.set(width)
         this.location.size.y.set(height)
+        this.dirtyDisplayList()
         return this
     }
 
     setInnerObject(o) {
         this.innerObjectPaddingThing = o
+        this.dirtyDisplayList()
     }
 }
 

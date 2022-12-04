@@ -24,6 +24,8 @@ class SoopyNumber {
         this.currAnimTime = 0
 
         this.animMode = "sin"
+
+        this.onChangeFunctions = []
     }
 
     /**
@@ -32,6 +34,11 @@ class SoopyNumber {
      */
     setAnimMode(mode) {
         this.animMode = mode
+
+        for (let fun of this.onChangeFunctions) {
+            fun()
+        }
+
         return this
     }
     /**
@@ -47,6 +54,11 @@ class SoopyNumber {
         this.currAnimTime = animationTime
 
         this.number = number
+
+        for (let fun of this.onChangeFunctions) {
+            fun(animationTime)
+        }
+
         return this
     }
 
@@ -70,6 +82,16 @@ class SoopyNumber {
 
     isAnimating() {
         return !(this.currAnimTime === 0 || this.lastNumberUpdate + this.currAnimTime < Date.now())
+    }
+
+    /**
+     * Callback function for when the values have changed
+     * @param {function(time:number))} fun 
+     * @returns {SoopyLocation} this for method chaining
+     */
+    onchange(fun) {
+        this.onChangeFunctions.push(fun)
+        return this
     }
 }
 

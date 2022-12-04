@@ -12,12 +12,12 @@ import Enum from "../Enum"
  * A Toggle, can be toggled on or off.
  * @class
  */
-class Toggle extends SoopyBoxElement{
+class Toggle extends SoopyBoxElement {
     /**
      * Creates a {@link Toggle}
      * @constructor
      */
-    constructor(){
+    constructor() {
 
         super()
 
@@ -33,27 +33,29 @@ class Toggle extends SoopyBoxElement{
         let renderEvent = new SoopyRenderEvent()
 
         this.value = false
-        renderEvent.setHandler(()=>{
+        renderEvent.setHandler(() => {
             let theColor = Renderer.color(this.toggleColor[0].get(), this.toggleColor[1].get(), this.toggleColor[2].get())
 
-            Renderer.drawRect(theColor, this.location.getXExact()+3+(this.location.getWidthExact()-6)*this.toggleProgress.get()/2, this.location.getYExact()+3, (this.location.getWidthExact()-6)/2, this.location.getHeightExact()-6)
+            Renderer.drawRect(theColor, this.location.getXExact() + 3 + (this.location.getWidthExact() - 6) * this.toggleProgress.get() / 2, this.location.getYExact() + 3, (this.location.getWidthExact() - 6) / 2, this.location.getHeightExact() - 6)
         })
-        this.events.push(renderEvent)
+        this.addEvent(renderEvent)
 
         let clickEvent = new SoopyMouseClickEvent()
-        clickEvent.setHandler(()=>{
+        clickEvent.setHandler(() => {
             let oldValue = this.value
 
             this.value = !this.value
 
-            this.toggleProgress.set(this.value?1:0, 500)
-            this.setToggleColor(...(this.value?this.colorTrue:this.colorFalse), 250)
+            this.toggleProgress.set(this.value ? 1 : 0, 500)
+            this.setToggleColor(...(this.value ? this.colorTrue : this.colorFalse), 250)
 
-            this.triggerEvent(Enum.EVENT.CONTENT_CHANGE, [this.value, oldValue, ()=>{
+            this.triggerEvent(Enum.EVENT.CONTENT_CHANGE, [this.value, oldValue, () => {
                 this.setValue(oldValue, 0)
             }])
+
+            this.dirtyDisplayList(500)
         })
-        this.events.push(clickEvent)
+        this.addEvent(clickEvent)
     }
 
     /**
@@ -64,10 +66,11 @@ class Toggle extends SoopyBoxElement{
      * @param {Number} anim The animation time in ms for this change
      * @returns {Toggle} this for method chaining
      */
-    setToggleColor(r, g, b, anim=0){
+    setToggleColor(r, g, b, anim = 0) {
         this.toggleColor[0].set(r, anim)
         this.toggleColor[1].set(g, anim)
         this.toggleColor[2].set(b, anim)
+        this.dirtyDisplayList(anim)
         return this
     }
 
@@ -77,10 +80,11 @@ class Toggle extends SoopyBoxElement{
      * @param {Number} anim The animation time in ms for this change
      * @returns {Toggle} this for method chaining
      **/
-    setValue(val, anim=0){
+    setValue(val, anim = 0) {
         this.value = val
-        this.toggleProgress.set(this.value?1:0, anim)
-        this.setToggleColor(...(this.value?this.colorTrue:this.colorFalse), anim)
+        this.toggleProgress.set(this.value ? 1 : 0, anim)
+        this.setToggleColor(...(this.value ? this.colorTrue : this.colorFalse), anim)
+        this.dirtyDisplayList(anim)
         return this
     }
 }

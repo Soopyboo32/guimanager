@@ -31,7 +31,7 @@ class SoopyImageElement extends SoopyGuiElement {
             }
         })
 
-        this.events.push(renderEvent)
+        this.addEvent(renderEvent)
     }
 
     setImage(url) {
@@ -47,6 +47,7 @@ class SoopyImageElement extends SoopyGuiElement {
                     }
                 }
 
+                this.dirtyDisplayList()
             }).start()
         } else {
             if (this.SloadHeightFromImage) {
@@ -55,6 +56,7 @@ class SoopyImageElement extends SoopyGuiElement {
                     this.onImageHeightChangeFunc[0].call(this.onImageHeightChangeFunc[1])
                 }
             }
+            this.dirtyDisplayList()
         }
 
         return this
@@ -69,6 +71,7 @@ class SoopyImageElement extends SoopyGuiElement {
         } else {
             this.SloadHeightFromImage = true
         }
+        this.dirtyDisplayList()
 
         return this
     }
